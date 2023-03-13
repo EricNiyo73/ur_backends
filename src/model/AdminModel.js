@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 
 const bookAdminSchema = new mongoose.Schema({
-    facility: [{
+    facility: [
+      [{
         type: Array,
         default: [],
         facilityname: {
@@ -20,7 +21,8 @@ const bookAdminSchema = new mongoose.Schema({
             },
           },
         ],
-      }],
+      }]
+    ],
     desc: {
         type: String,
         required: true

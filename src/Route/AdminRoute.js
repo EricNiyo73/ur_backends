@@ -22,7 +22,7 @@ router.put("/:id",Authorization, updatefacility);
 router.delete("/:id", Authorization,deletefacility);
 //GET ALL
 router.get("/:id", accounts,getfacilit);
-router.get("/", getfacility);
+router.get("/", accounts,getfacility);
 
 // change role
 router.patch('/Role/:id',userRole);

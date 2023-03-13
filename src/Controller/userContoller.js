@@ -165,3 +165,60 @@ export const deleteUser = async (req, res) => {
   //   return res.status(401).json("You can delete only your account!");
   // }
 };
+
+
+// ===================verify====================
+export const verifyEmail = async (req, res) => {
+  try {
+    const token = req.query.token;
+    console.log("tokrn------", token);
+    const user = await User.findOne({ emailToken: token });
+    console.log("user------", user);
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid verification token",
+      });
+    }
+    await user.updateOne({ isVerified: true });
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+
+    let emailSubject = "Email verified Successfully";
+    let emailBody = `<p>Dear ${user.firstname},</p>
+             <p>Thanks for registering on our site.</p>
+             <p>Your email has been successfully verified.</p>`;
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: emailSubject,
+      html: emailBody,
+    };
+    //sending email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+
+    return res.status(200).json({
+      message: "Email verified successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Unexpected error",
+    });
+  }
+};

@@ -1,88 +1,66 @@
 /**
  * @swagger
- * components:
- *   schemas:
- *     Facility:
- *       type: object
- *       required:
- *         - facilityname
- *         - subFacility
- *         - desc
- *         - image
- *       properties:
- *         _id:
- *           type: string
- *           description: The auto-generated ID of the facility.
- *         facilityname:
- *           type: string
- *           description: The name of the facility.
- *         subFacility:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               facility_number:
- *                 type: string
- *                 description: The number of the sub-facility.
- *               capacity:
- *                 type: number
- *                 description: The capacity of the sub-facility.
- *         desc:
- *           type: string
- *           description: The description of the facility.
- *         image:
- *           type: string
- *           description: The URL of the image of the facility.
- */
-
-
-/**
- * @swagger
+ * definitions:
+ *   Facility:
+ *     type: object
+ *     properties:
+ *       facility:
+ *         type: array
+ *         items:
+ *           type: object
+ *           properties:
+ *             facilityname:
+ *               type: string
+ *               required: true
+ *               description: The name of the facility
+ *             subFacility:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   facility_number:
+ *                     type: string
+ *                     required: true
+ *                     description: The facility number
+ *                   capacity:
+ *                     type: integer
+ *                     required: true
+ *                     description: The maximum capacity of the sub-facility
+ *     required:
+ *       - facility
+ *       - desc
+ *
  * /admin/create:
  *   post:
- *     summary:  create a new facility
- *     description: Creation of a new facility and upload an images of that
- *     tags: [Admin]
+ *     summary: Create a new facility
+ *     description: Creates a new facility with the provided details and image
+ *     consumes:
+ *       - multipart/form-data
+ *     produces:
+ *       - application/json
  *     requestBody:
- *       required: true
  *       content:
  *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
- *               facility:
- *                 type: object
- *                 description: The facility object.
- *                 properties:
- *                   facilityname:
- *                     type: string
- *                     description: The name of the facility.
- *                   subFacility:
- *                     type: array
- *                     description: An array of sub-facilities.
- *                     items:
- *                       type: object
- *                       properties:
- *                         facility_number:
- *                           type: string
- *                           description: The unique number of the sub-facility.
- *                         capacity:
- *                           type: number
- *                           description: The capacity of the sub-facility.
- *               desc:
- *                 type: string
- *                 description: The description of the facility.
  *               image:
  *                 type: string
  *                 format: binary
- *                 description: The image file to upload.
+ *                 description: The image file for the facility
+ *               desc:
+ *                 type: string
+ *                 required: true
+ *                 description: The description of the facility
+ *               facility:
+ *                 $ref: '#/definitions/Facility'
  *     responses:
- *       '200':
- *         description: OK
- *       '400':
- *         description: Bad Request
- *       '500':
- *         description: Internal Server Error
+ *       200:
+ *         description: Facility created successfully
+ *       400:
+ *         description: Invalid input provided
+ *       500:
+ *         description: Failed to create facility
  */
 
 

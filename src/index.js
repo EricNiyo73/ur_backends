@@ -61,7 +61,7 @@ const options = {
             bearerAuth: []
         }],
         servers: [{
-            url: 'https://urbackend.onrender.com'
+            url: 'http://localhost:4000'
         }]
       
     },
