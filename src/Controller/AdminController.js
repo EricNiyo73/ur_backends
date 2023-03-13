@@ -1,6 +1,5 @@
 import facility from "../model/AdminModel.js";
 import BookingRequest from "../model/bookUserModel";
-// import {sendBookingNotification} from "../confirmation/userNotify.js";
 import  Router  from 'express';
 const router = Router();
 import bodyParser from 'body-parser';
@@ -10,6 +9,8 @@ import express from "express";
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 dotenv.config();
+
+
 const app = express();
 // app.use(express.json());
 router.use(express.json());

@@ -11,6 +11,7 @@ export const createUser = async (req, res) => {
   try {
     // sending verification email
     let emailSubject;
+    
     let emailBody;
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
