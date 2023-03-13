@@ -11,16 +11,17 @@ import {
   bookrequest
 } from "../Controller/AdminController";
 
-
+import accounts from '../middlewire/musthaveAccount';
+import Authorization from '../middlewire/verifyAdmin';
 //CREATE
-router.post("/create",upload.single("image"), createfacility);
+router.post("/create",upload.single("image"),createfacility);
 
 //UPDATE
-router.put("/:id", updatefacility);
+router.put("/:id",Authorization, updatefacility);
 //DELETE
-router.delete("/:id", deletefacility);
+router.delete("/:id", Authorization,deletefacility);
 //GET ALL
-router.get("/:id", getfacilit);
+router.get("/:id", accounts,getfacilit);
 router.get("/", getfacility);
 
 // change role

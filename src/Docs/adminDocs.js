@@ -40,8 +40,8 @@
  * @swagger
  * /admin/create:
  *   post:
- *     summary: Endpoint summary
- *     description: Endpoint description
+ *     summary:  create a new facility
+ *     description: Creation of a new facility and upload an images of that
  *     tags: [Admin]
  *     requestBody:
  *       required: true
@@ -65,7 +65,7 @@
  *                       properties:
  *                         facility_number:
  *                           type: string
- *                           description: The number of the sub-facility.
+ *                           description: The unique number of the sub-facility.
  *                         capacity:
  *                           type: number
  *                           description: The capacity of the sub-facility.
