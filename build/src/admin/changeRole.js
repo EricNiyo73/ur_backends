@@ -20,6 +20,12 @@ const userRole = async (req, res) => {
       res.json({
         message: 'your usertype updated successfully'
       });
+    } else if (req.body.role === 'admin') {
+      roles.role = req.body.role;
+      await roles.save();
+      res.json({
+        message: 'Now you are an Admin'
+      });
     } else if (req.body.role === 'user') {
       roles.role = req.body.role;
       await roles.save();

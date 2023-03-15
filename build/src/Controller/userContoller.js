@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateUser = exports.login = exports.getAll = exports.deleteUser = exports.createUser = void 0;
+exports.verifyEmail = exports.updateUser = exports.login = exports.getAll = exports.deleteUser = exports.createUser = void 0;
 var _userModel = _interopRequireDefault(require("../model/userModel.js"));
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
@@ -139,40 +139,94 @@ const getAll = (req, res) => {
 // ====================update==============================
 exports.getAll = getAll;
 const updateUser = async (req, res) => {
-  if (req.body.userId === req.params.id) {
-    if (req.body.password) {
-      const salt = await _bcrypt.default.genSalt(10);
-      req.body.password = await _bcrypt.default.hash(req.body.password, salt);
-    }
-    try {
-      const updatedUser = await _userModel.default.findByIdAndUpdate(req.params.id, {
-        $set: req.body
-      }, {
-        new: true
-      });
-      return res.status(200).json(updatedUser);
-    } catch (err) {
-      res.status(500).json(err);
-    }
-  } else {
-    return res.status(401).json("You can update  your account only!");
+  // if (req.body.userId === req.params.id) {
+  try {
+    const updatedUser = await _userModel.default.findByIdAndUpdate(req.params.id, {
+      $set: req.body
+    }, {
+      new: true
+    });
+    return res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(500).json(err);
   }
+  // } else {
+  //   return res.status(401).json("You can update  your account only!");
+  // }
 };
 
 // ===================delete user================================
 exports.updateUser = updateUser;
 const deleteUser = async (req, res) => {
-  if (req.body.userId === req.params.id) {
-    try {
-      const user = await _userModel.default.findById(req.params.id);
-      await _userModel.default.findByIdAndDelete(req.params.id);
-      return res.status(200).json("User has been deleted...");
-    } catch (err) {
-      return res.status(404).json("User not found!");
+  // if (req.body.userId === req.params.id) {
+  try {
+    const user = await _userModel.default.findById(req.params.id);
+    await _userModel.default.findByIdAndDelete(req.params.id);
+    return res.status(200).json("User has been deleted...");
+  } catch (err) {
+    return res.status(404).json("User not found!");
+  }
+  // } else {
+  //   return res.status(401).json("You can delete only your account!");
+  // }
+};
+
+// ===================verify====================
+exports.deleteUser = deleteUser;
+const verifyEmail = async (req, res) => {
+  try {
+    const token = req.query.token;
+    console.log("tokrn------", token);
+    const user = await _userModel.default.findOne({
+      emailToken: token
+    });
+    console.log("user------", user);
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid verification token"
+      });
     }
-  } else {
-    return res.status(401).json("You can delete only your account!");
+    await user.updateOne({
+      isVerified: true
+    });
+    const transporter = _nodemailer.default.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
+    let emailSubject = "Email verified Successfully";
+    let emailBody = `<p>Dear ${user.firstname},</p>
+             <p>Thanks for registering on our site.</p>
+             <p>Your email has been successfully verified.</p>`;
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: emailSubject,
+      html: emailBody
+    };
+    //sending email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+    return res.status(200).json({
+      message: "Email verified successfully"
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Unexpected error"
+    });
   }
 };
-exports.deleteUser = deleteUser;
+exports.verifyEmail = verifyEmail;
 //# sourceMappingURL=userContoller.js.map

@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _express = _interopRequireDefault(require("express"));
 var _newsController = require("../Controller/newsController");
+var _musthaveAccount = _interopRequireDefault(require("../middlewire/musthaveAccount"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 const router = _express.default.Router();
 router.post('/create', _newsController.upload.single("newsImage"), _newsController.createNews);

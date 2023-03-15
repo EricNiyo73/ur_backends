@@ -11,6 +11,7 @@ const router = _express.default.Router();
 router.post("/signup", _userContoller.createUser);
 router.post("/login", _userContoller.login);
 router.get("/", _userContoller.getAll);
+router.get("/verify-email/", _userContoller.verifyEmail);
 router.put("/:id", _userContoller.updateUser);
 router.delete("/:id", _userContoller.deleteUser);
 var _default = router;

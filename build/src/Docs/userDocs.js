@@ -1,5 +1,50 @@
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     UserModel:
+ *       type: object
+ *       properties:
+ *         firstname:
+ *           type: string
+ *           description: First name of the user
+ *         lastname:
+ *           type: string
+ *           description: Last name of the user
+ *         email:
+ *           type: string
+ *           description: Email of the user
+ *         password:
+ *           type: string
+ *           description: Password of the user
+ *         emailToken:
+ *           type: string
+ *           description: Email verification token of the user
+ *         isVerified:
+ *           type: boolean
+ *           description: Whether the user's email has been verified
+ *         role:
+ *           type: string
+ *           description: Role of the user
+ *           enum:
+ *             - user
+ *             - admin
+ *             - leader
+ *           default: user
+ *         date:
+ *           type: string
+ *           format: date-time
+ *           description: Date and time when the user was created
+ *       required:
+ *         - firstname
+ *         - lastname
+ *         - email
+ *         - password
+ *         - emailToken
+ */
+
+/**
+ * @swagger
  * /user/signup:
  *   post:
  *     summary: Create a new user

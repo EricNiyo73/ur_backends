@@ -14,11 +14,11 @@ async function Authorization(req, res, next) {
     if (token) {
       const decoded = _jsonwebtoken.default.verify(token, process.env.JWT_SECRET);
       const user = await _userModel.default.findById(decoded.id);
-      if (user.role === "admin") {
+      if (user.role === "leader") {
         next();
       } else {
         return res.status(401).json({
-          message: "Only admin can create a facility"
+          message: "Only leader can book"
         });
       }
     } else {
@@ -35,4 +35,4 @@ async function Authorization(req, res, next) {
 }
 var _default = Authorization;
 exports.default = _default;
-//# sourceMappingURL=verifyAdmin.js.map
+//# sourceMappingURL=verifyleader.js.map

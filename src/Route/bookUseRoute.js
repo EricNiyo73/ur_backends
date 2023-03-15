@@ -7,7 +7,7 @@ import {
   getbooks,
   updatebook,
 } from "../Controller/bookUserController";
-import accounts from '../middlewire/musthaveAccount';
+// import accounts from '../middlewire/musthaveAccount';
 import Authorization from '../middlewire/verifyleader';
 //CREATE
 router.post("/createbook/:userId", Authorization,createbooking);
@@ -17,7 +17,7 @@ router.put("/:id", Authorization,updatebook);
 //DELETE
 router.delete("/:id", Authorization,deletebook);
 //GET ALL
-router.get('/:id',accounts,getbook);
-router.get("/", accounts,getbooks);
+router.get('/:id',getbook);
+router.get("/", getbooks);
 
 export default router;

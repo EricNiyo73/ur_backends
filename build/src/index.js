@@ -48,9 +48,14 @@ const options = {
   swaggerDefinition: {
     openapi: '3.0.0',
     info: {
-      title: 'My APIs documentation',
+      title: 'API documentation',
       version: '1.0.0',
-      description: 'This is my API documentation'
+      description: `<h1>This is API  which deals with Events,News and Facilities booking in UR Huye Campus</h2>
+                            <h3>Authors</h3>
+                            <ol>
+                            <li><a href="https://github.com/EricNiyo73">Mr Eric N</a></li>
+                            <li><a href="https://github.com/utiheba-happy-janvier">Happy Janviere</a></li>
+                            </ol>`
     },
     components: {
       securitySchemes: {

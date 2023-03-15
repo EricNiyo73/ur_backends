@@ -9,8 +9,10 @@ var _changeRole = require("../admin/changeRole");
 var _AdminController = require("../Controller/AdminController");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 const router = _express.default.Router();
+// import accounts from '../middlewire/musthaveAccount';
+// import Authorization from '../middlewire/verifyAdmin';
 //CREATE
-router.post("/create", _AdminController.createfacility);
+router.post("/create", _AdminController.upload.single("image"), _AdminController.createfacility);
 
 //UPDATE
 router.put("/:id", _AdminController.updatefacility);
