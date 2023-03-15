@@ -116,6 +116,15 @@ export const login = async (req, res) => {
     return res.status(500).json(err);
   }
 };
+// ==========get one==========================
+export const getOne = async (req, res) => {
+  try {
+    const users = await User.findById(req.params.id);
+    return res.status(200).json(users);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
 
 // ===============================GETALL USERS=============================
 export const getAll = (req, res) => {

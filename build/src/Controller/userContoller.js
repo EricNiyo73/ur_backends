@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.verifyEmail = exports.updateUser = exports.login = exports.getAll = exports.deleteUser = exports.createUser = void 0;
+exports.verifyEmail = exports.updateUser = exports.login = exports.getOne = exports.getAll = exports.deleteUser = exports.createUser = void 0;
 var _userModel = _interopRequireDefault(require("../model/userModel.js"));
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
@@ -123,9 +123,19 @@ const login = async (req, res) => {
     return res.status(500).json(err);
   }
 };
+// ==========get one==========================
+exports.login = login;
+const getOne = async (req, res) => {
+  try {
+    const users = await _userModel.default.findById(req.params.id);
+    return res.status(200).json(users);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
 
 // ===============================GETALL USERS=============================
-exports.login = login;
+exports.getOne = getOne;
 const getAll = (req, res) => {
   _userModel.default.find().then(users => {
     return res.send(users);

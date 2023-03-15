@@ -237,3 +237,28 @@
  *       '404':
  *         description: User not found
  */
+
+
+/**
+ * @swagger
+ * /user/{id}:
+ *   get:
+ *     summary: Get a users item by ID
+ *     tags: [users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the users item to retrieve
+ *     responses:
+ *       200:
+ *         description: Returns the users item with the specified ID
+ *         schema:
+ *           $ref: '#/definitions/users'
+ *       404:
+ *         description: users item not found
+ *       500:
+ *         description: Internal server error
+ */

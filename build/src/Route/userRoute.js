@@ -10,6 +10,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const router = _express.default.Router();
 router.post("/signup", _userContoller.createUser);
 router.post("/login", _userContoller.login);
+router.get("/:id", _userContoller.getOne);
 router.get("/", _userContoller.getAll);
 router.get("/verify-email/", _userContoller.verifyEmail);
 router.put("/:id", _userContoller.updateUser);
