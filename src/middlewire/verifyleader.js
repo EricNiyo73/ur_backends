@@ -8,7 +8,7 @@ async function Authorization(req, res, next) {
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id);
-      if (user.role === "leader") {
+      if (user.role === "leader" || user.role === "admin") {
         next();
       } else {
         return res.status(401).json({
