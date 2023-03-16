@@ -1,36 +1,24 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const bookAdminSchema = new mongoose.Schema({
-    facility: [
-      [{
-        type: Array,
-        default: [],
-        facilityname: {
-          type: String,
-          required: true,
-        },
-        subFacility: [
-          {
-            facility_number: {
-              type: String,
-              required: true,
-            },
-            capacity: {
-              type: Number,
-              required: true,
-            },
-          },
-        ],
-      }]
-    ],
-    desc: {
-        type: String,
-        required: true
-    },
-    image: {
-        type: String,
-        required: true
-    }
-    // bookNumbers: [{ number: Number, unavailableDates: {type: [Date]}}],
-})
+  facilityname: {
+    type: String,
+    required: true,
+  },
+  sub: {
+    type: Array,
+    required: true,
+  },
+  maxcapacity: {
+    type: Number,
+    required: true,
+  },
+  desc: {
+    type: String,
+    default: "No description",
+  },
+  image: {
+    type: String,
+  },
+});
 export default mongoose.model("bookAdmin", bookAdminSchema);
