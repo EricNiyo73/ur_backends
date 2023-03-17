@@ -76,7 +76,6 @@ export const createfacility = async (req, res, next) => {
       facilityname: req.body.facilityname,
       sub: sub,
       desc: req.body.desc,
-      maxcapacity: req.body.maxcapacity,
       image: result.secure_url,
     });
     return res.status(201).json({
@@ -129,7 +128,6 @@ export const updatefacility = async (req, res, next) => {
           facilityname: req.body.facilityname,
           sub: req.body.sub ? [...getfacility.sub].concat(sub) : facility.sub,
           desc: req.body.desc,
-          maxcapacity: req.body.maxcapacity,
           image: req.file ? result?.secure_url : facility.image,
         },
       },

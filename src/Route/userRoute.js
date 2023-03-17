@@ -11,7 +11,7 @@ import {
 } from "../Controller/userContoller";
 import accounts from '../middlewire/musthaveAccount'
 const router = express.Router();
-router.post("/signup",upload.single("userImage"), createUser);
+router.post("/signup", createUser);
 router.post("/login", login);
 router.get("/:id", getOne);
 router.get("/", getAll);

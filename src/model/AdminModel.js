@@ -10,10 +10,6 @@ const bookAdminSchema = new mongoose.Schema({
     type: Array,
     required: true,
   },
-  maxcapacity: {
-    type: Number,
-    required: true,
-  },
   desc: {
     type: String,
     default: "No description",

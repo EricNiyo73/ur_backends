@@ -57,7 +57,7 @@ export const createUser = async (req, res) => {
         rejectUnauthorized: false,
       },
     });
-    const result = await cloudinary.uploader.upload(req.file.path);
+    // const result = await cloudinary.uploader.upload(req.file.path);
     const salt = await bcrypt.genSalt(10);
     const hashedpassword = await bcrypt.hash(req.body.password, salt);
 
@@ -79,7 +79,6 @@ export const createUser = async (req, res) => {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         email: req.body.email,
-        userImage: result.secure_url,
         password: hashedpassword,
         emailToken: crypto.randomBytes(64).toString("hex"),
       });
@@ -99,6 +98,7 @@ export const createUser = async (req, res) => {
             error,
           });
         });
+        console.log(req.body);
       emailSubject = "Email verification";
       emailBody = `<p>Dear ${newUser.firstname},</p>
                    <p>Thanks for registering on our site.</p>
@@ -178,13 +178,23 @@ export const getAll = (req, res) => {
 export const updateUser = async (req, res) => {
   // if (req.body.userId === req.params.id) {
     try {
+      const result = await cloudinary.uploader.upload(req.file.path);
       const updatedUser = await User.findByIdAndUpdate(
         req.params.id,
         {
-          $set: req.body,
+          $set: {          
+          email: req.body.email,
+          firstname: req.body.firstname,
+          lastname: req.body.lastname,
+          password: req.body.password,
+          userImage: result.secure_url
+          }
         },
         { new: true }
       );
+      if (!updatedUser) {
+        return res.status(404).json({ error: "user not found" });
+      }
       return res.status(200).json(updatedUser);
     } catch (err) {
       res.status(500).json(err);
