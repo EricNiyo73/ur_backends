@@ -57,6 +57,7 @@ export const createUser = async (req, res) => {
         rejectUnauthorized: false,
       },
     });
+    const result = await cloudinary.uploader.upload(req.file.path);
     const salt = await bcrypt.genSalt(10);
     const hashedpassword = await bcrypt.hash(req.body.password, salt);
 
@@ -78,7 +79,7 @@ export const createUser = async (req, res) => {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         email: req.body.email,
-        email: req.body.email,
+        userImage: result.secure_url,
         password: hashedpassword,
         emailToken: crypto.randomBytes(64).toString("hex"),
       });
@@ -139,7 +140,7 @@ export const login = async (req, res) => {
       return res.status(201).json("Invalid Email or Username!");
     } else {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
+        expiresIn: "24h",
       });
       return res.status(200).json({
         message: "Logged in successfully",

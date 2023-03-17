@@ -5,16 +5,17 @@ import {
   getAll,
   getOne,
   updateUser,
+  upload,
   deleteUser,
    verifyEmail,
 } from "../Controller/userContoller";
 import accounts from '../middlewire/musthaveAccount'
 const router = express.Router();
-router.post("/signup", createUser);
+router.post("/signup",upload.single("userImage"), createUser);
 router.post("/login", login);
 router.get("/:id", getOne);
 router.get("/", getAll);
 router.get("/verify-email/", verifyEmail);
-router.put("/:id", accounts,updateUser);
+router.put("/:id",upload.single("userImage"), accounts,updateUser);
 router.delete("/:id", accounts,deleteUser);
 export default router;
