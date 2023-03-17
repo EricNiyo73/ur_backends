@@ -163,7 +163,7 @@ export const getfacilit = async (req, res, next) => {
 //   ==========================get facility availability==========================
 export const getfacility = async (req, res, next) => {
   try {
-    const facilit = await subModel.find();
+    const facilit = await facility.find();
 
     // const subFacility = await subModel.find();
 

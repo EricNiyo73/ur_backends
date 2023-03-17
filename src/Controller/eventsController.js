@@ -101,10 +101,13 @@ export const createEvent = async (req, res) => {
   // ===============Update=============================
   export const updateEvent = async (req, res) => {
       try {
+        const result = await cloudinary.uploader.upload(req.file.path);
         const updatedEvent = await eventModel.findByIdAndUpdate(
           req.params.id,
           {
-            $set: req.body,
+            eventTitle: req.body.eventTitle,
+            eventContent: req.body.eventContent,
+            eventImage: result.secure_url
           },
           { new: true }
         );

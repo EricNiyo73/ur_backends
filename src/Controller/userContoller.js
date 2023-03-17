@@ -224,7 +224,7 @@ export const deleteUser = async (req, res) => {
 // ===================verify====================
 export const verifyEmail = async (req, res) => {
   try {
-    const token = req.query.token;
+    const token = req.params.token;
     console.log("tokrn------", token);
     const user = await User.findOne({ emailToken: token });
     console.log("user------", user);

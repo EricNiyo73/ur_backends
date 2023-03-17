@@ -123,14 +123,14 @@ export const createNews = async (req, res) => {
   export const updateNews = async (req, res) => {
     try {
       // const { id } = req.params;
-      // const result = await cloudinary.uploader.upload(req.file.path);
+      const result = await cloudinary.uploader.upload(req.file.path);
       const updatedNews = await News.findByIdAndUpdate(
         req.params.id,
         {
           newsTitle: req.body.newsTitle,
           newsContent: req.body.newsContent,
           category: req.body.category,
-          // newsImage: result.secure_url
+          newsImage: result.secure_url
         },
         { new: true } 
       );
