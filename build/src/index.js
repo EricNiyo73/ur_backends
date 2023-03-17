@@ -8,6 +8,7 @@ require("@babel/polyfill");
 var _express = _interopRequireDefault(require("express"));
 var _mongoose = _interopRequireDefault(require("mongoose"));
 var _dotenv = _interopRequireDefault(require("dotenv"));
+var _morgan = _interopRequireDefault(require("morgan"));
 var _bodyParser = _interopRequireDefault(require("body-parser"));
 var _cors = _interopRequireDefault(require("cors"));
 var _userRoute = _interopRequireDefault(require("./Route/userRoute"));
@@ -24,6 +25,7 @@ const {
 } = process.env;
 const app = (0, _express.default)();
 app.use((0, _cors.default)());
+app.use((0, _morgan.default)("dev"));
 app.use(_express.default.json());
 app.use(_bodyParser.default.urlencoded({
   extended: false
@@ -72,7 +74,7 @@ const options = {
       bearerAuth: []
     }],
     servers: [{
-      url: 'http://localhost:4000'
+      url: 'https://urbackend.onrender.com'
     }]
   },
   apis: ['./src/Docs/*.js']

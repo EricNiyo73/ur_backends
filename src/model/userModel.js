@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
+  userImage: {
+    type: String,
+    default:"profile.jpg"
+  },
   firstname: {
     type: String,
     required: true,

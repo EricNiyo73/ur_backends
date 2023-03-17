@@ -1,12 +1,45 @@
 import User from "../model/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import multer from "multer";
+const path = require("path");
+import  Router  from 'express';
+import express from "express";
+const router = Router();
+import bodyParser from 'body-parser';
 import nodemailer from "nodemailer";
 import { verify } from "../helpers/verifyEmail";
 import dotenv from "dotenv";
 dotenv.config();
 import * as crypto from "crypto";
 
+
+
+router.use("/images", express.static(path.join(process.cwd(), "/images")));
+router.use(bodyParser.urlencoded({ extended: true }))
+router.use(bodyParser.json());
+
+// ============Claudinary configuration=================
+import { v2 as cloudinary } from 'cloudinary';
+cloudinary.config({
+  cloud_name:process.env.CLOUDNAME,
+  api_key:process.env.API_KEY,
+  api_secret:process.env.API_SECRET
+});
+export let upload = multer({
+  storage: multer.diskStorage({}),
+  fileFilter: (req, file, cb) => {
+    try {
+      let ext = path.extname(file.originalname);
+      if (ext !== ".JPG" && ext !== ".JPEG" && ext !== ".PNG" && ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png"){
+        return cb(new Error("File type is not supported"), false);
+      }
+      cb(null, true);
+    } catch (error) {
+      return cb(error, false);
+    }
+  },
+});
 export const createUser = async (req, res) => {
   try {
     // sending verification email
@@ -44,6 +77,7 @@ export const createUser = async (req, res) => {
       const newUser = new User({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
+        email: req.body.email,
         email: req.body.email,
         password: hashedpassword,
         emailToken: crypto.randomBytes(64).toString("hex"),

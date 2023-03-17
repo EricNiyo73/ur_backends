@@ -121,17 +121,30 @@ export const createNews = async (req, res) => {
 
   // ===============Update=============================
   export const updateNews = async (req, res) => {
-      try {
-        const updatedNews = await News.findByIdAndUpdate(
-          req.params.id,
-          {
-            $set: req.body,
-          },
-          { new: true }
-        );
-     return res.status(200).json(updatedNews);
-      } catch (err) {
-        res.status(500).json(err);
+    try {
+      // const { id } = req.params;
+  
+      const updatedNews = await News.findByIdAndUpdate(
+        req.params.id,
+        {
+          newsTitle: req.body.newsTitle,
+          newsContent: req.body.newsContent,
+          category: req.body.category,
+        },
+        { new: true } 
+      );
+  
+      if (!updatedNews) {
+        return res.status(404).json({ error: "News not found" });
+      }
+  
+      return res.status(200).json({
+        updatedNews,
+        status: "Your news was successfully  updated",
+      });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
   };
-}
+  
 export default router;

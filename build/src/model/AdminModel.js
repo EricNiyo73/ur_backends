@@ -7,33 +7,25 @@ exports.default = void 0;
 var _mongoose = _interopRequireDefault(require("mongoose"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 const bookAdminSchema = new _mongoose.default.Schema({
-  facility: [[{
-    type: Array,
-    default: [],
-    facilityname: {
-      type: String,
-      required: true
-    },
-    subFacility: [{
-      facility_number: {
-        type: String,
-        required: true
-      },
-      capacity: {
-        type: Number,
-        required: true
-      }
-    }]
-  }]],
-  desc: {
+  facilityname: {
     type: String,
     required: true
   },
-  image: {
-    type: String,
+  sub: {
+    type: Array,
     required: true
+  },
+  maxcapacity: {
+    type: Number,
+    required: true
+  },
+  desc: {
+    type: String,
+    default: "No description"
+  },
+  image: {
+    type: String
   }
-  // bookNumbers: [{ number: Number, unavailableDates: {type: [Date]}}],
 });
 var _default = _mongoose.default.model("bookAdmin", bookAdminSchema);
 exports.default = _default;

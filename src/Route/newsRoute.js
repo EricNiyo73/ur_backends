@@ -4,9 +4,9 @@ import accounts from '../middlewire/musthaveAccount'
 const router = express.Router();
 
 
-router.post('/create',upload.single("newsImage"), createNews);
+router.post('/create',upload.single("newsImage"), accounts,createNews);
 router.get('/',findAll);
 router.get('/:id',getOne);
-router.delete('/:id',deleteNews);
-router.put('/:id',updateNews);
+router.delete('/:id',accounts,deleteNews);
+router.put('/:id',upload.single("newsImage"),accounts,updateNews);
 export default router;

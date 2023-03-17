@@ -15,17 +15,19 @@ const router = _express.default.Router();
 router.post("/create", _AdminController.upload.single("image"), _AdminController.createfacility);
 
 //UPDATE
-router.put("/:id", _AdminController.updatefacility);
+router.put("/:id", _AdminController.upload.single("image"), _AdminController.updatefacility);
 //DELETE
 router.delete("/:id", _AdminController.deletefacility);
 //GET ALL
 router.get("/:id", _AdminController.getfacilit);
 router.get("/", _AdminController.getfacility);
+router.delete("/facility/:facilityId/:id", _AdminController.deleteSub);
+router.put("/facility/:facilityId/:id", _AdminController.upload.single("image"), _AdminController.updateSub);
 
 // change role
-router.patch('/Role/:id', _changeRole.userRole);
+router.patch("/Role/:id", _changeRole.userRole);
 // appove
-router.patch('/booking-requests/:id', _AdminController.bookrequest);
+router.patch("/booking-requests/:id", _AdminController.bookrequest);
 var _default = router;
 exports.default = _default;
 //# sourceMappingURL=AdminRoute.js.map

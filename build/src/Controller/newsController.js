@@ -132,16 +132,31 @@ const deleteNews = async (req, res) => {
 exports.deleteNews = deleteNews;
 const updateNews = async (req, res) => {
   try {
-    const updatedNews = await _newsModel.default.findByIdAndUpdate(req.params.id, {
-      $set: req.body
-    }, {
-      new: true
+    const id = req.params.id;
+    const result = await _cloudinary.v2.uploader.upload(req.file.path);
+    const post = await _newsModel.default.findById(id);
+    if (!post) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Id of news not found"
+      });
+    }
+    await _newsModel.default.findByIdAndUpdate(id, {
+      newsTitle: req.body.newsTitle,
+      newsContent: req.body.newsContent,
+      newsImage: result.secure_url,
+      category: req.body.category
     });
-    return res.status(200).json(updatedNews);
-  } catch (err) {
-    res.status(500).json(err);
+    return res.status(200).json({
+      status: "success",
+      message: "News updated successfully"
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "failed",
+      error: error
+    });
   }
-  ;
 };
 exports.updateNews = updateNews;
 var _default = router;

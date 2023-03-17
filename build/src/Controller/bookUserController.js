@@ -16,6 +16,7 @@ function _toPrimitive(input, hint) { if (typeof input !== "object" || input === 
 // ==================creation of availability book===========
 
 const createbooking = async (req, res) => {
+  console.log(req.body.time);
   try {
     const user = await _userModel.default.findById(req.params.userId);
     if (!user) {
@@ -23,25 +24,18 @@ const createbooking = async (req, res) => {
         message: "User not found"
       });
     }
-    const date = req.body.date;
-    const time = req.body.time;
-    // const existingBooking = await book.findOne({
-    //   availability: {
-    //     $elemMatch: {
-    //       date: { $eq: date },
-    //       time: { $eq: time }
-    //     }
-    //   }
-    //   // 'availability.isAvailable': true,
-    //   // maxPeople: { $gte: capacity },
-    // });
     const existingBooking = await _bookUserModel.default.findOne({
       subFacility: req.body.subFacility,
-      date: req.body.date,
-      time: req.body.time
+      date: req.body.date
     });
     if (existingBooking) {
-      return res.status(401).json("No available booking for the specified date and time");
+      if (existingBooking.time === "Morning" && req.body.time === "Morning" || req.body.time === "Fullday") {
+        return res.status(403).json("No available booking for the specified date and time1");
+      } else if (existingBooking.time === "Afternoon" && req.body.time === "Afternoon" || req.body.time === "Fullday") {
+        return res.status(403).json("No available booking for the specified date and time2");
+      } else {
+        return res.status(403).json("No available booking for the specified date and time3");
+      }
     } else {
       const bookingData = _objectSpread(_objectSpread({}, req.body), {}, {
         firstname: user.firstname,
@@ -60,15 +54,15 @@ const createbooking = async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    return res.status(500).json("failed");
+    return res.status(500).json(err);
   }
 };
 
 // export const createbooking = async (req, res,date, time,capacity) => {
 //   try{
-//   book.findOne({ 
-//     'availability.date': date, 
-//     'availability.time': time, 
+//   book.findOne({
+//     'availability.date': date,
+//     'availability.time': time,
 //     'availability.isAvailable': true},
 //      (err, bookuser) => {
 //     if (err) {

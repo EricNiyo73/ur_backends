@@ -4,6 +4,7 @@ const bookAdminSchema = new mongoose.Schema({
   facilityname: {
     type: String,
     required: true,
+    unique: true,
   },
   sub: {
     type: Array,

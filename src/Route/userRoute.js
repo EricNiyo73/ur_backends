@@ -8,12 +8,13 @@ import {
   deleteUser,
    verifyEmail,
 } from "../Controller/userContoller";
+import accounts from '../middlewire/musthaveAccount'
 const router = express.Router();
 router.post("/signup", createUser);
 router.post("/login", login);
 router.get("/:id", getOne);
 router.get("/", getAll);
 router.get("/verify-email/", verifyEmail);
-router.put("/:id", updateUser);
-router.delete("/:id", deleteUser);
+router.put("/:id", accounts,updateUser);
+router.delete("/:id", accounts,deleteUser);
 export default router;
