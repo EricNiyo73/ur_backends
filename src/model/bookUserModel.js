@@ -18,7 +18,8 @@ const bookUserSchema = new mongoose.Schema(
           required: true,
         },
         subFacility: {
-          type: String
+          type: String,
+          required: true,
         },
       maxPeople: {
         type: Number,

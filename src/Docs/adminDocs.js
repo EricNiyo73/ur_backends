@@ -1,44 +1,16 @@
 /**
  * @swagger
- * definitions:
- *   Facility:
- *     type: object
- *     properties:
- *       facility:
- *         type: array
- *         items:
- *           type: object
- *           properties:
- *             facilityname:
- *               type: string
- *               required: true
- *               description: The name of the facility
- *             subFacility:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   facility_number:
- *                     type: string
- *                     required: true
- *                     description: The facility number
- *                   capacity:
- *                     type: integer
- *                     required: true
- *                     description: The maximum capacity of the sub-facility
- *     required:
- *       - facility
- *       - desc
- *
- * /admin/create:
+ * admin/create:
  *   post:
  *     summary: Create a new facility
- *     description: Creates a new facility with the provided details and image
+ *     description: |
+ *       This endpoint creates a new facility with the specified facility name, sub-facility names, description, and image file.
  *     consumes:
  *       - multipart/form-data
  *     produces:
  *       - application/json
  *     requestBody:
+ *       required: true
  *       content:
  *         multipart/form-data:
  *           schema:
@@ -48,20 +20,72 @@
  *                 type: string
  *                 format: binary
  *                 description: The image file for the facility
+ *               facilityname:
+ *                 type: string
+ *                 description: The name of the facility
+ *               sub:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: An array of sub-facility names
  *               desc:
  *                 type: string
- *                 required: true
- *                 description: The description of the facility
- *               facility:
- *                 $ref: '#/definitions/Facility'
+ *                 description: A description of the facility
  *     responses:
- *       200:
+ *       '201':
  *         description: Facility created successfully
- *       400:
- *         description: Invalid input provided
- *       500:
- *         description: Failed to create facility
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 statusbar:
+ *                   type: string
+ *                   example: "success"
+ *                 message:
+ *                   type: string
+ *                   example: "facility created successfully"
+ *                 facility:
+ *                   $ref: '#/components/schemas/Facility'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Error creating facility"
+ * components:
+ *   schemas:
+ *     Facility:
+ *       type: object
+ *       properties:
+ *         facilityname:
+ *           type: string
+ *         sub:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               sub:
+ *                 type: string
+ *         desc:
+ *           type: string
+ *         image:
+ *           type: string
+ *           format: uri
+ *           description: URL of the image file uploaded to Cloudinary
+ *       example:
+ *         facilityname: Basketball Court
+ *         sub:
+ *           - sub: Half-court
+ *           - sub: Full-court
+ *         desc: A court for playing basketball
+ *         image: https://res.cloudinary.com/demo/image/upload/v1234567890/sample.jpg
  */
+
 
 
 // ===================get all====================

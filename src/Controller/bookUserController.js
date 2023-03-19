@@ -1,6 +1,60 @@
 import book from "../model/bookUserModel.js";
 import User from "../model/userModel.js";
 import nodemailer from "nodemailer";
+
+// ==============check Availability====================
+
+export const checkAvailability = async (req, res) => {
+  try{
+  const existingBooking = await book.findOne({
+    subFacility: req.body.subFacility,
+    date: req.body.date,
+  });
+  if (existingBooking) {
+    if (
+      ((existingBooking.time === "Morning") &&   (req.body.time === "Morning" || req.body.time === "Fullday")) &&
+      (existingBooking.status === "Approved"))
+     {
+      return res
+        .status(403)
+        .json("No available booking for the specified date and time1");
+     } 
+     else if (
+      (existingBooking.time === "Afternoon") &&
+       ( req.body.time === "Afternoon" || req.body.time === "Fullday") 
+       && (existingBooking.status ==="Approved")
+    ) {
+      return res
+        .status(403)
+        .json("No available booking for the specified date and time2");
+    } 
+    else if (
+      (existingBooking.time === "Fullday" ) &&
+       ( req.body.time === "Afternoon" ||
+      req.body.time === "Morning" ||
+      req.body.time === "Fullday")
+      && (existingBooking.status ==="Approved")
+    ) {
+      return res
+        .status(403)
+        .json("No available booking for the specified date and time tird");
+    }
+    else {
+      return res
+        .status(201)
+        .json("you can book this book");
+    }
+    } else {
+      return res
+       .status(200)
+       .json("you can book now");
+    
+}
+} catch (err) {
+  console.error(err);
+  return res.status(500).json(err);
+}
+}
 // ==================creation of availability book===========
 
 export const createbooking = async (req, res) => {
@@ -17,26 +71,52 @@ export const createbooking = async (req, res) => {
     });
     if (existingBooking) {
       if (
-        (existingBooking.time === "Morning" && req.body.time === "Morning") ||
-        req.body.time === "Fullday"
-      ) {
+        ((existingBooking.time === "Morning") &&   (req.body.time === "Morning" || req.body.time === "Fullday")) &&
+        (existingBooking.status === "Approved"))
+       {
         return res
           .status(403)
           .json("No available booking for the specified date and time1");
-      } else if (
-        (existingBooking.time === "Afternoon" &&
-          req.body.time === "Afternoon") ||
-        req.body.time === "Fullday"
+       } 
+       else if (
+        (existingBooking.time === "Afternoon") &&
+         ( req.body.time === "Afternoon" || req.body.time === "Fullday") 
+         && (existingBooking.status ==="Approved")
       ) {
         return res
           .status(403)
           .json("No available booking for the specified date and time2");
-      } else {
+      } 
+      else if (
+        (existingBooking.time === "Fullday" ) &&
+         ( req.body.time === "Afternoon" ||
+        req.body.time === "Morning" ||
+        req.body.time === "Fullday")
+        && (existingBooking.status ==="Approved")
+      ) {
         return res
           .status(403)
-          .json("No available booking for the specified date and time3");
+          .json("No available booking for the specified date and time tird");
       }
-    } else {
+      else {
+        const bookingdata = {
+          ...req.body,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+        };
+        // create a new booking
+        const booking = new book(bookingdata);
+        // booking.roomUser = availableBooking._id;
+  
+        await booking.save();
+  
+        return res.status(200).json({
+          message: "Booking request submitted successfully",
+          booking,
+        });
+      }
+     } else {
       const bookingData = {
         ...req.body,
         firstname: user.firstname,
@@ -60,46 +140,6 @@ export const createbooking = async (req, res) => {
   }
 };
 
-// export const createbooking = async (req, res,date, time,capacity) => {
-//   try{
-//   book.findOne({
-//     'availability.date': date,
-//     'availability.time': time,
-//     'availability.isAvailable': true},
-//      (err, bookuser) => {
-//     if (err) {
-//       return res.status(500).json("there is an error");
-//     } else if (!bookuser) {
-//       return res.status(401).json("No available booking for the specified date and time");
-//     } else {
-//       // create a new booking
-//       const booking = new book(req.body);
-
-//       booking.save((err,booking)=>{
-//         if(err){
-//           return res.status(500).json("failed");
-//         }
-//         else {
-//           return res.status(200).json({
-//             message: "success",
-//             booking
-//           });
-//         }
-//       });
-//     }
-//   });
-//   } catch (err) {
-//     next(err);
-//   }
-// const newbook = new book(req.body);
-
-// try {
-//   const savedbook = await newbook.save();
-//   res.status(200).json(savedbook);
-// } catch (err) {
-//   next(err);
-// }
-// };
 
 // ==================update book==========================
 

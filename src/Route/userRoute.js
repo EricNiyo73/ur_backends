@@ -16,6 +16,6 @@ router.post("/login", login);
 router.get("/:id", getOne);
 router.get("/", getAll);
 router.get("/verify-email/", verifyEmail);
-router.put("/:id",upload.single("userImage"), accounts,updateUser);
+router.put("/:id",upload.single("userImage"),updateUser);
 router.delete("/:id", accounts,deleteUser);
 export default router;

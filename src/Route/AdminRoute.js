@@ -14,25 +14,25 @@ import {
 } from "../Controller/AdminController";
 
 // import accounts from '../middlewire/musthaveAccount';
-// import Authorization from '../middlewire/verifyAdmin';
+import Authorization from '../middlewire/verifyAdmin';
 //CREATE
-router.post("/create", upload.single("image"), createfacility);
+router.post("/create", upload.single("image"), Authorization,createfacility);
 
 //UPDATE
-router.put("/:id", upload.single("image"), updatefacility);
+router.put("/:id", upload.single("image"), Authorization,updatefacility);
 //DELETE
-router.delete("/:id", deletefacility);
+router.delete("/:id",Authorization, deletefacility);
 //GET ALL
 router.get("/:id", getfacilit);
 
 router.get("/", getfacility);
 
-router.delete("/facility/:facilityId/:id", deleteSub);
-router.put("/facility/:facilityId/:id", upload.single("image"), updateSub);
+router.delete("/facility/:facilityId/:id", Authorization,deleteSub);
+router.put("/facility/:facilityId/:id", upload.single("image"), Authorization,updateSub);
 
 // change role
-router.patch("/Role/:id", userRole);
+router.patch("/Role/:id",Authorization, userRole);
 // appove
-router.patch("/booking-requests/:id", bookrequest);
+router.patch("/booking-requests/:id",Authorization, bookrequest);
 
 export default router;
