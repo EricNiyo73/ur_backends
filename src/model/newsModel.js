@@ -19,6 +19,9 @@ const newsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    comments:{
+        type:Array
+      },
     date: {
         type: Date,
         default: Date.now,

@@ -10,6 +10,8 @@ import newsRoute from './Route/newsRoute';
 import eventRoute from './Route/eventRoute';
 import admin from './Route/AdminRoute';
 import bookUser from './Route/bookUseRoute';
+import Comment from "./Route/commentRoute";
+import subscribe from "./Route/subscribeRoute";
 import swaggerUI from "swagger-ui-express";
 import  swaggerJSDoc from "swagger-jsdoc";
 dotenv.config();
@@ -76,6 +78,8 @@ app.use('/user',userRoutes);
 app.use('/news',newsRoute);
 app.use('/events',eventRoute);
 app.use('/admin',admin);
+app.use('/comment',Comment);
+app.use('/subscribe',subscribe);
 app.use('/userbooking',bookUser);
 app.use('/docsdocs', swaggerUI.serve, swaggerUI.setup(specs));
 app.get('/', (req, res) => {

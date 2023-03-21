@@ -259,13 +259,18 @@ export const bookrequest = async (req, res) => {
       // ============================================
       res.json({ message: "Booking request approved successfully" });
     } else if (req.body.status === "Rejected") {
+
+      if (!req.body.rejectionReason) {
+        return res.status(400).json({ message: "Rejection reason is required" });
+      }
       bookingRequest.status = req.body.status;
+      bookingRequest.rejectionReason = req.body.rejectionReason;
       await bookingRequest.save();
       // ===================mesage====================
       emailSubject = "Booking Rejection";
       emailBody = `<p>Dear ${bookingRequest.firstname},</p>
                <p>Your booking has been rejected.</p>
-               <p>Please contact us for more details.</p>`;
+               <p>${req.body.rejectionReason}</p>`;
       res.json({ message: "Booking request rejected successfully" });
     } else {
       res.status(400).json({ message: "Invalid booking request status" });

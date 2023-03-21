@@ -103,7 +103,7 @@ export const createUser = async (req, res) => {
       emailBody = `<p>Dear ${newUser.firstname},</p>
                    <p>Thanks for registering on our site.</p>
                    <p>Please verify your email to continue...</p>
-                   <a href="http://${req.headers.host}/user/verify-email?token=${newUser.emailToken}">Verify Email</a>`;
+                   <a href="http://${req.headers.host}/user/verify-email/${newUser.emailToken}">Verify Email</a>`;
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: newUser.email,

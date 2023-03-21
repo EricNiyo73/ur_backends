@@ -6,6 +6,8 @@ const path = require("path");
 import express from "express";
 import dotenv from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
+import nodemailer from "nodemailer";
+import subscriber from '../model/subscribers.js';
 
 dotenv.config();
 const router = Router();
@@ -40,6 +42,22 @@ export var upload = multer({
 // =============================Create a Event=====================
 export const createEvent = async (req, res) => {
   try {
+
+        // create a notification=============================
+        let emailSubject;
+    
+        let emailBody;
+        const transporter = nodemailer.createTransport({
+          host: "smtp.gmail.com",
+          port: 587,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          },
+          tls: {
+            rejectUnauthorized: false,
+          },
+        });
     if (!req.file) 
     return res.send('Please upload a file');
     console.log("Request: ", req);
@@ -51,6 +69,28 @@ export const createEvent = async (req, res) => {
       eventContent:req.body.eventContent,
     })
     const saveEvent = await newevent.save();
+
+    // ============================================================
+    const subscribedUsers = await subscriber.find();
+    emailSubject = "New Update on UR Huye Site";
+    emailBody = `<p>New Event added on site !!!!!</p>`;
+  subscribedUsers.forEach((user) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: user.email,
+    subject: emailSubject,
+    html: `<p>Dear ${user.name}</p>
+    <p>${emailBody}</p>`,
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+});
+// =====================================================
     return res.status(200).json({
       saveEvent,
       status: "your Event was successfully uploaded"
