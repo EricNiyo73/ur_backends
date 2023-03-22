@@ -8,11 +8,11 @@ async function Authorization(req, res, next) {
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id);
-      if ((user.role === "leader" || user.role === "admin") && (user.isVerified === true)) {
+      if ((user.role === "leader" || user.role === "admin")) {
         next();
       } else {
         return res.status(401).json({
-          message: "Only leader can book and email must be verified"
+          message: "Only leader can book "
         });
       }
     } else {

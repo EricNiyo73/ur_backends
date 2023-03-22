@@ -37,5 +37,32 @@ export const createSubscribe = async (req, res, next) => {
           
 }
 
+// =========================get All subscribers =================
+export const findAll = async (req, res) => {
+  try{
+  const suscribe = await subscribers.find();
+    
+    return res.status(200).json({
+      data: suscribe
+    });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
+// =================================unsbscribe================================
 
 
+export const unsubscribe = async (req, res) => {
+  try {
+    const subs = await subscribers.findById(req.params.id);
+      try {
+        await subs.delete();
+        return res.status(200).json("you have successfully unsubscribed");
+      } catch (err) {
+        return  res.status(500).json(err);
+      }
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};

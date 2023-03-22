@@ -10,13 +10,7 @@ export default async(req, res, next) => {
     if(token){
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     const  user  =  await User.findById(decodedToken.id);
-        if (user.isVerified === true) {
-          next();
-        } else {
-          return res.status(401).json({
-            message: "Please!!! verify your account"
-          });
-        }
+         next();
     } else{
       return res.status(401).json({ message: 'please! create an account' });
     }
