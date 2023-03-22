@@ -9,10 +9,17 @@ async function Authorization(req, res, next) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id);
       if (user.role === "admin") {
+          if(user.isVerified === true){ 
         next();
+          }
+          else {
+            return res.status(401).json({
+              message: "First verify your account"
+            });
+          }
       } else {
         return res.status(401).json({
-          message: "Only admin can create a facility"
+          message: "Only admin can do this action"
         });
       }
     } else {

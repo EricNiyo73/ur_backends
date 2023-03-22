@@ -16,7 +16,7 @@ router.put("/checkAvailability",checkAvailability);
 //UPDATE
 router.put("/:id", Authorization,updatebook);
 //DELETE
-router.delete("/:id",deletebook);
+router.delete("/:id",Authorization,deletebook);
 //GET ALL
 router.get('/:id',getbook);
 router.get("/", getbooks);

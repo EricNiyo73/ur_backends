@@ -137,7 +137,7 @@ export const login = async (req, res) => {
 
     const validated = await bcrypt.compare(req.body.password, user.password);
     if (!(user && validated)) {
-      return res.status(201).json("Invalid Email or Username!");
+      return res.status(403).json("Invalid Email or Username!");
     } else {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "24h",
@@ -267,7 +267,7 @@ export const verifyEmail = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Email verified successfully",
+      message: "Email verified ,Now you can log in with your email",
     });
   } catch (error) {
     console.error(error);

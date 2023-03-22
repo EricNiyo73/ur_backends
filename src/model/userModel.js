@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema({
   },
   isVerified: {
     type: Boolean,
+    enum: [true, false],
     default: false,
   },
   role: {
