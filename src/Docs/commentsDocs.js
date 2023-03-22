@@ -3,6 +3,7 @@
  * /comment/addcomment/{id}/:
  *   post:
  *     summary: Add a comment to a news item
+ *     tags: [comment]
  *     parameters:
  *       - in: path
  *         name: id
@@ -48,6 +49,7 @@
  * /comment/{newsId}/{commentId}:
  *   delete:
  *     summary: Delete a comment from a news item
+ *     tags: [comment]
  *     parameters:
  *       - in: path
  *         name: newsId
@@ -88,6 +90,7 @@
  * /comment/count/{id}/:
  *   get:
  *     summary: Get the number of comments for a news item
+ *     tags: [comment]
  *     parameters:
  *       - in: path
  *         name: id

@@ -3,6 +3,7 @@
  * admin/create:
  *   post:
  *     summary: Create a new facility
+ *     tags: [Admin]
  *     description: |
  *       This endpoint creates a new facility with the specified facility name, sub-facility names, description, and image file.
  *     consumes:
