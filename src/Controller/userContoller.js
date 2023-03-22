@@ -134,7 +134,9 @@ export const createUser = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
-
+    if(!user.isVerified === true) {
+      return res.status(403).json("Email not verified ,check on your email and verify your email");
+    }
     const validated = await bcrypt.compare(req.body.password, user.password);
     if (!(user && validated)) {
       return res.status(403).json("Invalid Email or Username!");

@@ -31,7 +31,7 @@ router.delete("/facility/:facilityId/:id", Authorization,deleteSub);
 router.put("/facility/:facilityId/:id", upload.single("image"), Authorization,updateSub);
 
 // change role
-router.patch("/Role/:id",Authorization, userRole);
+router.patch("/Role/:id", userRole);
 // appove
 router.patch("/booking-requests/:id",Authorization, bookrequest);
 

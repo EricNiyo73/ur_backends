@@ -3,7 +3,7 @@ import {createEvent,upload,findAll,getOne,deleteEvent,updateEvent} from '../Cont
 import accounts from '../middlewire/musthaveAccount'
 const router = express.Router();
 
-router.post('/create',upload.single("eventImage"), accounts,createEvent);
+router.post('/create',upload.single("eventImage"),createEvent);
 router.get('/',findAll);
 router.get('/:id',getOne);
 router.delete('/:id',accounts,deleteEvent);
