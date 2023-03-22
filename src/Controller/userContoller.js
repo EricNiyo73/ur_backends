@@ -178,7 +178,7 @@ export const getAll = (req, res) => {
 
 // ====================update==============================
 export const updateUser = async (req, res) => {
-  // if (req.body.userId === req.params.id) {
+
     try {
       const result = await cloudinary.uploader.upload(req.file.path);
       const updatedUser = await User.findByIdAndUpdate(
@@ -189,6 +189,7 @@ export const updateUser = async (req, res) => {
           firstname: req.body.firstname,
           lastname: req.body.lastname,
           password: req.body.password,
+          role: req.body.role,
           userImage: result.secure_url
           }
         },
@@ -201,9 +202,7 @@ export const updateUser = async (req, res) => {
     } catch (err) {
       res.status(500).json(err);
     }
-  // } else {
-  //   return res.status(401).json("You can update  your account only!");
-  // }
+
 };
 
 // ===================delete user================================
