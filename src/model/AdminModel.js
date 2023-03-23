@@ -1,13 +1,12 @@
 import mongoose from "mongoose";
-
 const bookAdminSchema = new mongoose.Schema({
   facilityname: {
     type: String,
     required: true,
     unique: true,
   },
-  sub: {
-    type: Array,
+  category: {
+    type: String,
     required: true,
   },
   desc: {
@@ -15,6 +14,17 @@ const bookAdminSchema = new mongoose.Schema({
     default: "No description",
   },
   image: {
+    type: Array,
+  },
+  contactPersonName: {
+    type: String,
+    required: true,
+  },
+  maxcapacity: {
+    type: Number,
+    required: true,
+  },
+  managerId: {
     type: String,
   },
 });

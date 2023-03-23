@@ -7,16 +7,20 @@ import {
   updateUser,
   upload,
   deleteUser,
-   verifyEmail,
+  verifyEmail,
+  createmany,
+  deleteAll,
 } from "../Controller/userContoller";
-import accounts from '../middlewire/musthaveAccount';
-import Authorization from "../middlewire/verifyAdmin"
+// import accounts from "../middlewire/musthaveAccount";
+import Special_user from "../middlewire/verifySpecialUser";
 const router = express.Router();
 router.post("/signup", createUser);
+router.post("/signupMany", Special_user, createmany);
+router.delete("/deleteMany", deleteAll);
 router.post("/login", login);
 router.get("/:id", getOne);
 router.get("/", getAll);
 router.get("/verify-email/:token", verifyEmail);
-router.put("/:id",upload.single("userImage"),Authorization,updateUser);
-router.delete("/:id", Authorization,deleteUser);
+router.put("/:id", upload.single("userImage"), Special_user, updateUser);
+router.delete("/:id", Special_user, deleteUser);
 export default router;

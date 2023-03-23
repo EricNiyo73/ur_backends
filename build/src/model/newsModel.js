@@ -24,6 +24,9 @@ const newsSchema = new _mongoose.default.Schema({
     type: String,
     required: true
   },
+  comments: {
+    type: Array
+  },
   date: {
     type: Date,
     default: Date.now

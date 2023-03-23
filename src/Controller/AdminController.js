@@ -52,30 +52,20 @@ export var upload = multer({
 
 // ==================creation of availability facility===========
 export const createfacility = async (req, res, next) => {
+  console.log(req.manager);
   try {
     if (!req.file) return res.send("Please upload a file");
+
     const result = await cloudinary.uploader.upload(req.file.path);
-    let sub = [];
-    if (typeof req.body.sub === "object") {
-      for (let i = 0; i < req.body.sub.length; i++) {
-        sub.push(
-          await subModel.create({
-            sub: req.body.sub[i],
-          })
-        );
-      }
-    } else {
-      sub.push(
-        await subModel.create({
-          sub: req.body.sub,
-        })
-      );
-    }
 
     const newfacility = await facility.create({
       facilityname: req.body.facilityname,
-      sub: sub,
+      maxcapacity: req.body.maxcapacity,
       desc: req.body.desc,
+      contactPersonName: req.body.contactPersonName,
+      category: req.body.category,
+      desc: req.body.desc,
+      managerId: req.manager._id,
       image: result.secure_url,
     });
     return res.status(201).json({
@@ -173,6 +163,22 @@ export const getfacility = async (req, res, next) => {
   }
 };
 
+// ===================================deleteMany=============================
+export const deleteAll = async (req, res) => {
+  try {
+    await facility.deleteMany({});
+
+    return res.status(204).json({
+      status: "success",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+};
+
 export const updateSub = async (req, res, next) => {
   try {
     const selected = await facility.findById(req.params.facilityId);
@@ -185,16 +191,15 @@ export const updateSub = async (req, res, next) => {
       { new: true }
     );
 
-    console.log(selected,"jhhjhkjhkj",sub,index);
-    
-    
+    console.log(selected, "jhhjhkjhkj", sub, index);
+
     selected.sub[index] = sub;
     await selected.save();
 
     res.status(200).json({
       statusbar: "success",
       message: "sub updated successfully",
-    })
+    });
   } catch (err) {
     next(err);
   }
@@ -259,9 +264,10 @@ export const bookrequest = async (req, res) => {
       // ============================================
       res.json({ message: "Booking request approved successfully" });
     } else if (req.body.status === "Rejected") {
-
       if (!req.body.rejectionReason) {
-        return res.status(400).json({ message: "Rejection reason is required" });
+        return res
+          .status(400)
+          .json({ message: "Rejection reason is required" });
       }
       bookingRequest.status = req.body.status;
       bookingRequest.rejectionReason = req.body.rejectionReason;

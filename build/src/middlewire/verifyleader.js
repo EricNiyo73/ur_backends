@@ -14,11 +14,11 @@ async function Authorization(req, res, next) {
     if (token) {
       const decoded = _jsonwebtoken.default.verify(token, process.env.JWT_SECRET);
       const user = await _userModel.default.findById(decoded.id);
-      if (user.role === "leader" || user.role === "admin") {
+      if (user.role === "Administrative_Assistant") {
         next();
       } else {
         return res.status(401).json({
-          message: "Only leader can book"
+          message: "Only Administrative assistant is allowed to book a facility"
         });
       }
     } else {

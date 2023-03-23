@@ -3,35 +3,53 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import multer from "multer";
 const path = require("path");
-import  Router  from 'express';
+import Router from "express";
 import express from "express";
 const router = Router();
-import bodyParser from 'body-parser';
+import bodyParser from "body-parser";
 import nodemailer from "nodemailer";
 import { verify } from "../helpers/verifyEmail";
 import dotenv from "dotenv";
 dotenv.config();
 import * as crypto from "crypto";
 
-
-
+const mailOptions = (newUser, req) => {
+  let emailSubject = "Email verification";
+  let emailBody = `<p>Dear ${newUser.fullname},</p>
+               <p>You have registered on our site.</p>
+               <p>Please verify your email to continue...</p>
+               <a href="http://${req.headers.host}/user/verify-email/${newUser.emailToken}">Verify Email</a>`;
+  return {
+    from: process.env.EMAIL_USER,
+    to: newUser.email,
+    subject: emailSubject,
+    html: emailBody,
+  };
+};
 router.use("/images", express.static(path.join(process.cwd(), "/images")));
-router.use(bodyParser.urlencoded({ extended: true }))
+router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
 // ============Claudinary configuration=================
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary } from "cloudinary";
 cloudinary.config({
-  cloud_name:process.env.CLOUDNAME,
-  api_key:process.env.API_KEY,
-  api_secret:process.env.API_SECRET
+  cloud_name: process.env.CLOUDNAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
 export let upload = multer({
   storage: multer.diskStorage({}),
   fileFilter: (req, file, cb) => {
     try {
       let ext = path.extname(file.originalname);
-      if (ext !== ".JPG" && ext !== ".JPEG" && ext !== ".PNG" && ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png"){
+      if (
+        ext !== ".JPG" &&
+        ext !== ".JPEG" &&
+        ext !== ".PNG" &&
+        ext !== ".jpg" &&
+        ext !== ".jpeg" &&
+        ext !== ".png"
+      ) {
         return cb(new Error("File type is not supported"), false);
       }
       cb(null, true);
@@ -43,9 +61,6 @@ export let upload = multer({
 export const createUser = async (req, res) => {
   try {
     // sending verification email
-    let emailSubject;
-    
-    let emailBody;
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
@@ -58,8 +73,6 @@ export const createUser = async (req, res) => {
       },
     });
     // const result = await cloudinary.uploader.upload(req.file.path);
-    const salt = await bcrypt.genSalt(10);
-    const hashedpassword = await bcrypt.hash(req.body.password, salt);
 
     const existingEmail = await User.findOne({ email: req.body.email });
     // Email validation using a regular expression
@@ -76,10 +89,9 @@ export const createUser = async (req, res) => {
     } else {
       // Create a user
       const newUser = new User({
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
+        fullname: req.body.fullname,
         email: req.body.email,
-        password: hashedpassword,
+        role: req.body.role,
         emailToken: crypto.randomBytes(64).toString("hex"),
       });
 
@@ -98,20 +110,10 @@ export const createUser = async (req, res) => {
             error,
           });
         });
-        console.log(req.body);
-      emailSubject = "Email verification";
-      emailBody = `<p>Dear ${newUser.firstname},</p>
-                   <p>Thanks for registering on our site.</p>
-                   <p>Please verify your email to continue...</p>
-                   <a href="http://${req.headers.host}/user/verify-email/${newUser.emailToken}">Verify Email</a>`;
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: newUser.email,
-        subject: emailSubject,
-        html: emailBody,
-      };
+      console.log(req.body);
+
       //sending email
-      transporter.sendMail(mailOptions, (error, info) => {
+      transporter.sendMail(mailOptions(newUser), (error, info) => {
         if (error) {
           console.error(error);
         } else {
@@ -129,16 +131,82 @@ export const createUser = async (req, res) => {
   }
 };
 
+export const createmany = async (req, res, next) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+  try {
+    for (let index = 0; index < req.body.length; index++) {
+      const existingEmail = await User.findOne({
+        email: req.body[index].email,
+      });
+      if (existingEmail) {
+        // break;
+        return res.status(409).json({
+          message: `${req.body[index].email} already exists`,
+        });
+      }
+      transporter.sendMail(mailOptions(req.body[index], req), (error, info) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+
+      await User.create({
+        fullname: req.body[index].fullname,
+        email: req.body[index].email,
+        role: req.body[index].role,
+        emailToken: crypto.randomBytes(64).toString("hex"),
+      });
+    }
+    // const res  =  await all.then(data => {
+    //   return res.status(201).json({
+    //     status: "success",
+    //     data: data,
+    //   });
+    // })
+
+    // console.log(...all);
+    return res.status(201).json({
+      status: "success",
+      insertedUsers: "success",
+    });
+  } catch (err) {
+    if (err.code === "Cannot set headers after they are sent to the client") {
+      console.error(err);
+      return res.status(500).json({
+        message: "Unexpected error",
+      });
+    } else {
+      res.status(500).json({
+        status: "error",
+        message: err.message,
+      });
+    }
+  }
+};
 // ===============================LOGIN==================================
 
 export const login = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
-    if(!user.isVerified === true) {
-      return res.status(403).json("Email not verified ,check on your email and verify your email");
-    }
-    const validated = await bcrypt.compare(req.body.password, user.password);
-    if (!(user && validated)) {
+    // if (!user.isVerified === true) {
+    //   return res
+    //     .status(403)
+    //     .json("Email not verified ,check on your email and verify your email");
+    // }
+    // const validated = await bcrypt.compare(req.body.password, user.password);
+    if (!user) {
       return res.status(403).json("Invalid Email or Username!");
     } else {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -178,49 +246,46 @@ export const getAll = (req, res) => {
 
 // ====================update==============================
 export const updateUser = async (req, res) => {
-
-    try {
-      const result = await cloudinary.uploader.upload(req.file.path);
-      const updatedUser = await User.findByIdAndUpdate(
-        req.params.id,
-        {
-          $set: {          
+  try {
+    const result = await cloudinary.uploader.upload(req.file.path);
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
           email: req.body.email,
           firstname: req.body.firstname,
           lastname: req.body.lastname,
           password: req.body.password,
           role: req.body.role,
-          userImage: result.secure_url
-          }
+          userImage: result.secure_url,
         },
-        { new: true }
-      );
-      if (!updatedUser) {
-        return res.status(404).json({ error: "user not found" });
-      }
-      return res.status(200).json(updatedUser);
-    } catch (err) {
-      res.status(500).json(err);
+      },
+      { new: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ error: "user not found" });
     }
-
+    return res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
 // ===================delete user================================
 
 export const deleteUser = async (req, res) => {
   // if (req.body.userId === req.params.id) {
-    try {
-      const user = await User.findById(req.params.id);
-      await User.findByIdAndDelete(req.params.id);
-      return res.status(200).json("User has been deleted...");
-    } catch (err) {
-      return res.status(404).json("User not found!");
-    }
+  try {
+    const user = await User.findById(req.params.id);
+    await User.findByIdAndDelete(req.params.id);
+    return res.status(200).json("User has been deleted...");
+  } catch (err) {
+    return res.status(404).json("User not found!");
+  }
   // } else {
   //   return res.status(401).json("You can delete only your account!");
   // }
 };
-
 
 // ===================verify====================
 export const verifyEmail = async (req, res) => {
@@ -274,6 +339,20 @@ export const verifyEmail = async (req, res) => {
     console.error(error);
     return res.status(500).json({
       message: "Unexpected error",
+    });
+  }
+};
+export const deleteAll = async (req, res) => {
+  try {
+    await User.deleteMany({});
+
+    return res.status(204).json({
+      status: "success",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "fail",
+      message: error.message,
     });
   }
 };

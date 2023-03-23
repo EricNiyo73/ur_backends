@@ -55,23 +55,10 @@ const createfacility = async (req, res, next) => {
   try {
     if (!req.file) return res.send("Please upload a file");
     const result = await _cloudinary.v2.uploader.upload(req.file.path);
-    let sub = [];
-    if (typeof req.body.sub === "object") {
-      for (let i = 0; i < req.body.sub.length; i++) {
-        sub.push(await _sub.default.create({
-          sub: req.body.sub[i]
-        }));
-      }
-    } else {
-      sub.push(await _sub.default.create({
-        sub: req.body.sub
-      }));
-    }
     const newfacility = await _AdminModel.default.create({
       facilityname: req.body.facilityname,
-      sub: sub,
+      image: req.body.image,
       desc: req.body.desc,
-      maxcapacity: req.body.maxcapacity,
       image: result.secure_url
     });
     return res.status(201).json({
@@ -116,7 +103,6 @@ const updatefacility = async (req, res, next) => {
         facilityname: req.body.facilityname,
         sub: req.body.sub ? [...getfacility.sub].concat(sub) : _AdminModel.default.sub,
         desc: req.body.desc,
-        maxcapacity: req.body.maxcapacity,
         image: req.file ? result?.secure_url : _AdminModel.default.image
       }
     }, {
@@ -153,7 +139,7 @@ const getfacilit = async (req, res, next) => {
 exports.getfacilit = getfacilit;
 const getfacility = async (req, res, next) => {
   try {
-    const facilit = await _sub.default.find();
+    const facilit = await _AdminModel.default.find();
 
     // const subFacility = await subModel.find();
 
@@ -245,13 +231,19 @@ const bookrequest = async (req, res) => {
         message: "Booking request approved successfully"
       });
     } else if (req.body.status === "Rejected") {
+      if (!req.body.rejectionReason) {
+        return res.status(400).json({
+          message: "Rejection reason is required"
+        });
+      }
       bookingRequest.status = req.body.status;
+      bookingRequest.rejectionReason = req.body.rejectionReason;
       await bookingRequest.save();
       // ===================mesage====================
       emailSubject = "Booking Rejection";
       emailBody = `<p>Dear ${bookingRequest.firstname},</p>
                <p>Your booking has been rejected.</p>
-               <p>Please contact us for more details.</p>`;
+               <p>${req.body.rejectionReason}</p>`;
       res.json({
         message: "Booking request rejected successfully"
       });

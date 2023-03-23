@@ -65,6 +65,60 @@
  *         status: Pending
  */
 
+/** 
+ * @swagger
+ * 
+ * userbooking/checkAvailability:
+ *   put:
+ *     summary: Check availability for a booking
+ *     tags: [Booking]
+ *     description: Check if a booking is available for the specified date and time
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               subFacility:
+ *                 type: string
+ *                 description: Sub-facility name
+ *               date:
+ *                 type: string
+ *                 format: date
+ *                 description: Booking date
+ *               time:
+ *                 type: string
+ *                 enum: [Morning, Afternoon, Fullday]
+ *                 description: Booking time
+ *             required:
+ *               - subFacility
+ *               - date
+ *               - time
+ *     responses:
+ *       '200':
+ *         description: You can book now
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: "you can book now"
+ *       '201':
+ *         description: Available booking
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: "Availablebooking"
+ *       '403':
+ *         description: No available booking for the specified date and time
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: "No available booking for the specified date and time1"
+ */
+
 /**
  * @swagger
  * /userbooking/createbook/{userId}:

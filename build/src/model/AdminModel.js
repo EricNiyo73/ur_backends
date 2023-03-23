@@ -9,14 +9,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const bookAdminSchema = new _mongoose.default.Schema({
   facilityname: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
-  sub: {
-    type: Array,
-    required: true
-  },
-  maxcapacity: {
-    type: Number,
+  category: {
+    type: String,
     required: true
   },
   desc: {
@@ -24,7 +21,19 @@ const bookAdminSchema = new _mongoose.default.Schema({
     default: "No description"
   },
   image: {
-    type: String
+    type: Array
+  },
+  contactPersonName: {
+    type: String,
+    required: true
+  },
+  maxcapacity: {
+    type: Number,
+    required: true
+  },
+  managerId: {
+    type: String,
+    required: true
   }
 });
 var _default = _mongoose.default.model("bookAdmin", bookAdminSchema);

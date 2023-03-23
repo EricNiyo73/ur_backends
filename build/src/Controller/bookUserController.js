@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updatebook = exports.getbooks = exports.getbook = exports.deletebook = exports.createbooking = void 0;
+exports.updatebook = exports.getbooks = exports.getbook = exports.deletebook = exports.createbooking = exports.checkAvailability = void 0;
 var _bookUserModel = _interopRequireDefault(require("../model/bookUserModel.js"));
 var _userModel = _interopRequireDefault(require("../model/userModel.js"));
 var _nodemailer = _interopRequireDefault(require("nodemailer"));
@@ -13,8 +13,34 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-// ==================creation of availability book===========
+// ==============check Availability====================
 
+const checkAvailability = async (req, res) => {
+  try {
+    const existingBooking = await _bookUserModel.default.findOne({
+      subFacility: req.body.subFacility,
+      date: req.body.date
+    });
+    if (existingBooking) {
+      if (existingBooking.time === "Morning" && (req.body.time === "Morning" || req.body.time === "Fullday") && existingBooking.status === "Approved") {
+        return res.status(403).json("No available booking for the specified date and time1");
+      } else if (existingBooking.time === "Afternoon" && (req.body.time === "Afternoon" || req.body.time === "Fullday") && existingBooking.status === "Approved") {
+        return res.status(403).json("No available booking for the specified date and time2");
+      } else if (existingBooking.time === "Fullday" && (req.body.time === "Afternoon" || req.body.time === "Morning" || req.body.time === "Fullday") && existingBooking.status === "Approved") {
+        return res.status(403).json("No available booking for the specified date and time tird");
+      } else {
+        return res.status(201).json("you can book this book");
+      }
+    } else {
+      return res.status(200).json("you can book now");
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json(err);
+  }
+};
+// ==================creation of availability book===========
+exports.checkAvailability = checkAvailability;
 const createbooking = async (req, res) => {
   console.log(req.body.time);
   try {
@@ -29,12 +55,27 @@ const createbooking = async (req, res) => {
       date: req.body.date
     });
     if (existingBooking) {
-      if (existingBooking.time === "Morning" && req.body.time === "Morning" || req.body.time === "Fullday") {
+      if (existingBooking.time === "Morning" && (req.body.time === "Morning" || req.body.time === "Fullday") && existingBooking.status === "Approved") {
         return res.status(403).json("No available booking for the specified date and time1");
-      } else if (existingBooking.time === "Afternoon" && req.body.time === "Afternoon" || req.body.time === "Fullday") {
+      } else if (existingBooking.time === "Afternoon" && (req.body.time === "Afternoon" || req.body.time === "Fullday") && existingBooking.status === "Approved") {
         return res.status(403).json("No available booking for the specified date and time2");
+      } else if (existingBooking.time === "Fullday" && (req.body.time === "Afternoon" || req.body.time === "Morning" || req.body.time === "Fullday") && existingBooking.status === "Approved") {
+        return res.status(403).json("No available booking for the specified date and time tird");
       } else {
-        return res.status(403).json("No available booking for the specified date and time3");
+        const bookingdata = _objectSpread(_objectSpread({}, req.body), {}, {
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email
+        });
+        // create a new booking
+        const booking = new _bookUserModel.default(bookingdata);
+        // booking.roomUser = availableBooking._id;
+
+        await booking.save();
+        return res.status(200).json({
+          message: "Booking request submitted successfully",
+          booking
+        });
       }
     } else {
       const bookingData = _objectSpread(_objectSpread({}, req.body), {}, {
@@ -57,47 +98,6 @@ const createbooking = async (req, res) => {
     return res.status(500).json(err);
   }
 };
-
-// export const createbooking = async (req, res,date, time,capacity) => {
-//   try{
-//   book.findOne({
-//     'availability.date': date,
-//     'availability.time': time,
-//     'availability.isAvailable': true},
-//      (err, bookuser) => {
-//     if (err) {
-//       return res.status(500).json("there is an error");
-//     } else if (!bookuser) {
-//       return res.status(401).json("No available booking for the specified date and time");
-//     } else {
-//       // create a new booking
-//       const booking = new book(req.body);
-
-//       booking.save((err,booking)=>{
-//         if(err){
-//           return res.status(500).json("failed");
-//         }
-//         else {
-//           return res.status(200).json({
-//             message: "success",
-//             booking
-//           });
-//         }
-//       });
-//     }
-//   });
-//   } catch (err) {
-//     next(err);
-//   }
-// const newbook = new book(req.body);
-
-// try {
-//   const savedbook = await newbook.save();
-//   res.status(200).json(savedbook);
-// } catch (err) {
-//   next(err);
-// }
-// };
 
 // ==================update book==========================
 exports.createbooking = createbooking;

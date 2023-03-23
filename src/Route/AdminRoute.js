@@ -11,28 +11,41 @@ import {
   bookrequest,
   deleteSub,
   updateSub,
+  deleteAll,
 } from "../Controller/AdminController";
+import { createFacilityMiddleware } from "../middlewire/approvalandcreateFacilityMiddleware";
 
 // import accounts from '../middlewire/musthaveAccount';
-import Authorization from '../middlewire/verifyAdmin';
+import Authorization from "../middlewire/verifySpecialUser";
 //CREATE
-router.post("/create", upload.single("image"), Authorization,createfacility);
+router.post(
+  "/create",
+  upload.single("image"),
+  createFacilityMiddleware,
+  createfacility
+);
 
 //UPDATE
-router.put("/:id", upload.single("image"), Authorization,updatefacility);
+router.put("/:id", upload.single("image"), Authorization, updatefacility);
 //DELETE
-router.delete("/:id",Authorization, deletefacility);
+// router.delete("/:id", deletefacility);
+router.delete("/deleteMany/", deleteAll);
 //GET ALL
 router.get("/:id", getfacilit);
 
 router.get("/", getfacility);
 
-router.delete("/facility/:facilityId/:id", Authorization,deleteSub);
-router.put("/facility/:facilityId/:id", upload.single("image"), Authorization,updateSub);
+router.delete("/facility/:facilityId/:id", Authorization, deleteSub);
+router.put(
+  "/facility/:facilityId/:id",
+  upload.single("image"),
+  Authorization,
+  updateSub
+);
 
 // change role
 router.patch("/Role/:id", userRole);
 // appove
-router.patch("/booking-requests/:id",Authorization, bookrequest);
+router.patch("/booking-requests/:id", createFacilityMiddleware, bookrequest);
 
 export default router;

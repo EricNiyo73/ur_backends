@@ -8,10 +8,13 @@ var _express = _interopRequireDefault(require("express"));
 var _bodyParser = _interopRequireDefault(require("body-parser"));
 var _newsModel = _interopRequireDefault(require("../model/newsModel.js"));
 var _multer = _interopRequireDefault(require("multer"));
+var _nodemailer = _interopRequireDefault(require("nodemailer"));
 var _dotenv = _interopRequireDefault(require("dotenv"));
+var _subscribers = _interopRequireDefault(require("../model/subscribers.js"));
 var _cloudinary = require("cloudinary");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 // import router from "express".Router();
+// import { v4 as uuidv4 } from 'uuid';
 
 const router = (0, _express.default)();
 const path = require("path");
@@ -49,6 +52,22 @@ let upload = (0, _multer.default)({
 exports.upload = upload;
 const createNews = async (req, res) => {
   try {
+    // create a notification=============================
+    let emailSubject;
+    let emailBody;
+    const transporter = _nodemailer.default.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
+    // ======================================================
+
     if (!req.file) return res.send('Please upload a file');
     const result = await _cloudinary.v2.uploader.upload(req.file.path);
     console.log("Request File: ", req.file);
@@ -59,6 +78,28 @@ const createNews = async (req, res) => {
       category: req.body.category
     });
     const saveNews = await newNews.save();
+    // ====================================================
+    const subscribedUsers = await _subscribers.default.find();
+    emailSubject = "New Update on UR Huye Site";
+    emailBody = `<p>New News added on site !!!!!</p>`;
+    subscribedUsers.forEach(user => {
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: emailSubject,
+        html: `<p>Dear ${user.name},</p>${emailBody}
+          <a href="http://${req.headers.host}/news/">Please click on the link to view the news</a>`
+      };
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+    });
+
+    // ===================================================================
     return res.status(200).json({
       saveNews,
       status: "your news was successfully uploaded"
@@ -132,30 +173,27 @@ const deleteNews = async (req, res) => {
 exports.deleteNews = deleteNews;
 const updateNews = async (req, res) => {
   try {
-    const id = req.params.id;
+    // const { id } = req.params;
     const result = await _cloudinary.v2.uploader.upload(req.file.path);
-    const post = await _newsModel.default.findById(id);
-    if (!post) {
-      return res.status(400).json({
-        status: "failed",
-        message: "Id of news not found"
-      });
-    }
-    await _newsModel.default.findByIdAndUpdate(id, {
+    const updatedNews = await _newsModel.default.findByIdAndUpdate(req.params.id, {
       newsTitle: req.body.newsTitle,
       newsContent: req.body.newsContent,
-      newsImage: result.secure_url,
-      category: req.body.category
+      category: req.body.category,
+      newsImage: result.secure_url
+    }, {
+      new: true
     });
+    if (!updatedNews) {
+      return res.status(404).json({
+        error: "News not found"
+      });
+    }
     return res.status(200).json({
-      status: "success",
-      message: "News updated successfully"
+      updatedNews,
+      status: "Your news was successfully  updated"
     });
   } catch (error) {
-    return res.status(400).json({
-      status: "failed",
-      error: error
-    });
+    return res.status(500).json(error);
   }
 };
 exports.updateNews = updateNews;

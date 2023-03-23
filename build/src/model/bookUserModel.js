@@ -24,7 +24,8 @@ const bookUserSchema = new _mongoose.default.Schema({
     required: true
   },
   subFacility: {
-    type: String
+    type: String,
+    required: true
   },
   maxPeople: {
     type: Number,
@@ -51,6 +52,9 @@ const bookUserSchema = new _mongoose.default.Schema({
     type: String,
     enum: ['Pending', 'Approved', 'Rejected'],
     default: 'Pending'
+  },
+  rejectionReason: {
+    type: String
   }
 }, {
   timestamps: true

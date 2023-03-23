@@ -5,13 +5,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _mongoose = _interopRequireDefault(require("mongoose"));
+var _bcrypt = _interopRequireDefault(require("bcrypt"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 const userSchema = new _mongoose.default.Schema({
-  firstname: {
+  userImage: {
     type: String,
-    required: true
+    default: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
   },
-  lastname: {
+  fullname: {
     type: String,
     required: true
   },
@@ -23,7 +24,7 @@ const userSchema = new _mongoose.default.Schema({
   },
   password: {
     type: String,
-    required: true,
+    default: "urhuye@123",
     minLength: 5
   },
   emailToken: {
@@ -32,17 +33,23 @@ const userSchema = new _mongoose.default.Schema({
   },
   isVerified: {
     type: Boolean,
+    enum: [true, false],
     default: false
   },
   role: {
     type: String,
-    enum: ["user", "admin", "leader"],
-    default: "user"
+    enum: ["Tecnical_Support", "Administrative_Assistant", "Manager", "Special_user"]
   },
   date: {
     type: Date,
     default: Date.now
   }
+});
+userSchema.pre("save", async function (next) {
+  const user = this;
+  if (!user.isModified("password")) return next();
+  user.password = await _bcrypt.default.hash(user.password, 10);
+  next();
 });
 var _default = _mongoose.default.model("userModel", userSchema);
 exports.default = _default;

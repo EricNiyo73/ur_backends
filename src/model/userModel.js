@@ -1,15 +1,13 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
   userImage: {
     type: String,
-    default:"profile.jpg"
+    default:
+      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
   },
-  firstname: {
-    type: String,
-    required: true,
-  },
-  lastname: {
+  fullname: {
     type: String,
     required: true,
   },
@@ -21,7 +19,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    default: "urhuye@123",
     minLength: 5,
   },
   emailToken: {
@@ -35,12 +33,24 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["user", "admin", "leader"],
-    default: "user",
+    enum: [
+      "Tecnical_Support",
+      "Administrative_Assistant",
+      "Manager",
+      "Special_user",
+    ],
   },
   date: {
     type: Date,
     default: Date.now,
   },
 });
+
+userSchema.pre("save", async function (next) {
+  const user = this;
+  if (!user.isModified("password")) return next();
+  user.password = await bcrypt.hash(user.password, 10);
+  next();
+});
+
 export default mongoose.model("userModel", userSchema);

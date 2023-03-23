@@ -16,6 +16,8 @@ var _newsRoute = _interopRequireDefault(require("./Route/newsRoute"));
 var _eventRoute = _interopRequireDefault(require("./Route/eventRoute"));
 var _AdminRoute = _interopRequireDefault(require("./Route/AdminRoute"));
 var _bookUseRoute = _interopRequireDefault(require("./Route/bookUseRoute"));
+var _commentRoute = _interopRequireDefault(require("./Route/commentRoute"));
+var _subscribeRoute = _interopRequireDefault(require("./Route/subscribeRoute"));
 var _swaggerUiExpress = _interopRequireDefault(require("swagger-ui-express"));
 var _swaggerJsdoc = _interopRequireDefault(require("swagger-jsdoc"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -86,6 +88,8 @@ app.use('/user', _userRoute.default);
 app.use('/news', _newsRoute.default);
 app.use('/events', _eventRoute.default);
 app.use('/admin', _AdminRoute.default);
+app.use('/comment', _commentRoute.default);
+app.use('/subscribe', _subscribeRoute.default);
 app.use('/userbooking', _bookUseRoute.default);
 app.use('/docsdocs', _swaggerUiExpress.default.serve, _swaggerUiExpress.default.setup(specs));
 app.get('/', (req, res) => {

@@ -1,61 +1,48 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 const bookUserSchema = new mongoose.Schema(
-    {
-      firstname: {
-        type: String,
-        required: true,
-      },
-     lastname: {
-        type: String,
-        required: true,
-      },
-      email: {
-        type: String,
-        required: true,
-      },
-        facility: {
-          type: String,
-          required: true,
-        },
-        subFacility: {
-          type: String,
-          required: true,
-        },
-      maxPeople: {
-        type: Number,
-        required: true,
-      },
-      desc: {
-        type: String,
-        required: true,
-      },
-     
-        date: {
-          type: Date,
-          required: true,
-        },
-        time: {
-          type: String,
-          enum: ["Morning", "Afternoon","Fullday"],
-          required: true,
-        },
-        isAvailable: {
-          type: Boolean,
-          default: true,
-        },
-      status: {
-        type: String,
-        enum: ['Pending', 'Approved', 'Rejected'],
-        default: 'Pending'
-      },
-      rejectionReason: {
-        type: String,
-      }
+  {
+    assistantData: {
+      type: Object,
+      required: true,
     },
-    { timestamps: true }
+    facilityname: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
+    maxPeople: {
+      type: Number,
+      required: true,
+    },
+    purpose: {
+      type: String,
+      required: true,
+    },
 
-    // bookNumbers: [{ number: Number, unavailableDates: {type: [Date]}}],
- 
+    date: {
+      type: Date,
+      required: true,
+    },
+    time: {
+      type: String,
+      enum: ["Morning", "Afternoon", "Fullday"],
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["Pending", "Approved", "Rejected", "canceled"],
+      default: "Pending",
+    },
+    rejectionReason: {
+      type: String,
+    },
+  },
+  { timestamps: true }
+
+  // bookNumbers: [{ number: Number, unavailableDates: {type: [Date]}}],
 );
 
 export default mongoose.model("bookUser", bookUserSchema);

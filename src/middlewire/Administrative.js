@@ -8,22 +8,24 @@ async function Authorization(req, res, next) {
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id);
-      if (user.role === "admin") {
+      if (user.role === "Administrative_Assistant") {
+        req.assistantData = user;
         next();
       } else {
         return res.status(401).json({
-          message: "Only admin can do this action"
+          message:
+            "Only Administrative assistant is allowed to book a facility",
         });
       }
     } else {
       return res.status(401).json({
         status: "failed",
-        message: "Unauthorized"
+        message: "Unauthorized",
       });
     }
   } catch (error) {
     return res.status(400).json({
-      message: "Invalid token"
+      message: "Invalid token",
     });
   }
 }

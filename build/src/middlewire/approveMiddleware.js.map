@@ -1,0 +1,1 @@
+{"version":3,"file":"approveMiddleware.js","names":["Approve","exports","default","_default"],"sources":["../../../src/middlewire/approveMiddleware.js"],"sourcesContent":["export default await function Approve() {};\n"],"mappings":";;;;;;eAAe,MAAM,SAASA,OAAOA,CAAA,EAAG,CAAC,CAAC;AAAAC,OAAA,CAAAC,OAAA,GAAAC,QAAA"}

@@ -10,6 +10,8 @@ var _eventModel = _interopRequireDefault(require("../model/eventModel.js"));
 var _multer = _interopRequireDefault(require("multer"));
 var _dotenv = _interopRequireDefault(require("dotenv"));
 var _cloudinary = require("cloudinary");
+var _nodemailer = _interopRequireDefault(require("nodemailer"));
+var _subscribers = _interopRequireDefault(require("../model/subscribers.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 const path = require("path");
 _dotenv.default.config();
@@ -46,6 +48,20 @@ var upload = (0, _multer.default)({
 exports.upload = upload;
 const createEvent = async (req, res) => {
   try {
+    // create a notification=============================
+    let emailSubject;
+    let emailBody;
+    const transporter = _nodemailer.default.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
     if (!req.file) return res.send('Please upload a file');
     console.log("Request: ", req);
     console.log("Request File: ", req.file);
@@ -56,6 +72,29 @@ const createEvent = async (req, res) => {
       eventContent: req.body.eventContent
     });
     const saveEvent = await newevent.save();
+
+    // ============================================================
+    const subscribedUsers = await _subscribers.default.find();
+    emailSubject = "New Update on UR Huye Site";
+    emailBody = `<p>New Event added on site !!!!!</p>`;
+    subscribedUsers.forEach(user => {
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: emailSubject,
+        html: `<p>Dear ${user.name}</p>
+    <p>${emailBody}</p>
+    <a href="http://${req.headers.host}/events/">Please click on the link to view the Events</a>`
+      };
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+    });
+    // =====================================================
     return res.status(200).json({
       saveEvent,
       status: "your Event was successfully uploaded"
@@ -109,8 +148,11 @@ const deleteEvent = async (req, res) => {
 exports.deleteEvent = deleteEvent;
 const updateEvent = async (req, res) => {
   try {
+    const result = await _cloudinary.v2.uploader.upload(req.file.path);
     const updatedEvent = await _eventModel.default.findByIdAndUpdate(req.params.id, {
-      $set: req.body
+      eventTitle: req.body.eventTitle,
+      eventContent: req.body.eventContent,
+      eventImage: result.secure_url
     }, {
       new: true
     });

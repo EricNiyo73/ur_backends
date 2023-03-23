@@ -11,7 +11,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const router = _express.default.Router();
 //CREATE
 router.post("/createbook/:userId", _verifyleader.default, _bookUserController.createbooking);
-
+router.put("/checkAvailability", _bookUserController.checkAvailability);
 //UPDATE
 router.put("/:id", _verifyleader.default, _bookUserController.updatebook);
 //DELETE

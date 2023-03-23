@@ -18,7 +18,7 @@ async function Authorization(req, res, next) {
         next();
       } else {
         return res.status(401).json({
-          message: "Only admin can create a facility"
+          message: "Only admin can do this action"
         });
       }
     } else {
