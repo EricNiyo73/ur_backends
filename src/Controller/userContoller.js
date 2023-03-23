@@ -206,17 +206,21 @@ export const login = async (req, res) => {
     //     .json("Email not verified ,check on your email and verify your email");
     // }
     // const validated = await bcrypt.compare(req.body.password, user.password);
+
+    if (user.password !== req.body.password) {
+      return res.status(403).json("Invalid Email or Password!");
+    }
+
     if (!user) {
       return res.status(403).json("Invalid Email or Username!");
-    } else {
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "24h",
-      });
-      return res.status(200).json({
-        message: "Logged in successfully",
-        token: token,
-      });
     }
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "24h",
+    });
+    return res.status(200).json({
+      message: "Logged in successfully",
+      token: token,
+    });
   } catch (err) {
     return res.status(500).json(err);
   }

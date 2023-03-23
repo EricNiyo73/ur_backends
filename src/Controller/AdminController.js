@@ -184,13 +184,13 @@ export const deleteAll = async (req, res) => {
 
 // Endpoint for admins to approve or reject booking requests
 export const bookrequest = async (req, res) => {
-  if (req.body.status !== "Approved" || req.body.status === "Rejected") {
-    return res.status(400).json({
-      st: "fail",
-      message: "Invalid status",
-    });
-  }
   try {
+    if (req.body.status !== "Approved" || !(req.body.status === "Rejected")) {
+      return res.status(400).json({
+        stutus: "fail",
+        message: "Invalid status",
+      });
+    }
     const bookingRequest = await BookingRequest.findById(req.params.id);
     let emailSubject;
     let emailBody;
@@ -210,7 +210,10 @@ export const bookrequest = async (req, res) => {
     });
 
     // console.log(req.manager._id.toString(), facilityBooked.managerId);
-    if (req.manager._id.toString() === facilityBooked.managerId) {
+    if (
+      req.manager._id.toString() === facilityBooked.managerId &&
+      req.body.status === "Approved"
+    ) {
       bookingRequest.status = req.body.status;
       await bookingRequest.save();
       // ============message========================
@@ -219,13 +222,16 @@ export const bookrequest = async (req, res) => {
       //              <p>Your booking has been confirmed.</p>
       //              <p>Booking details:</p>
       //              <ul>
-      //                <li>Facility: ${bookingRequest.subFacility}</li>
+      //                <li>Facility: ${bookingRequest.facilityname}</li>
       //                <li>Date: ${bookingRequest.date}</li>
       //                <li>Time: ${bookingRequest.time}</li>
       //              </ul>`;
       // ============================================
       res.json({ message: "Booking request approved successfully" });
-    } else if (req.body.status === "Rejected") {
+    } else if (
+      req.manager._id.toString() === facilityBooked.managerId &&
+      req.body.status === "Rejected"
+    ) {
       if (!req.body.rejectionReason) {
         return res
           .status(400)
