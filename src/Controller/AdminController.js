@@ -1,5 +1,5 @@
 import facility from "../model/AdminModel.js";
-import subModel from "../model/sub.js";
+// import subModel from "../model/sub.js";
 
 import BookingRequest from "../model/bookUserModel";
 import Router from "express";
@@ -179,60 +179,17 @@ export const deleteAll = async (req, res) => {
   }
 };
 
-export const updateSub = async (req, res, next) => {
-  try {
-    const selected = await facility.findById(req.params.facilityId);
-    let index = selected.sub.findIndex((sub) => sub._id == req.params.id);
-    const sub = await subModel.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    );
-
-    console.log(selected, "jhhjhkjhkj", sub, index);
-
-    selected.sub[index] = sub;
-    await selected.save();
-
-    res.status(200).json({
-      statusbar: "success",
-      message: "sub updated successfully",
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const deleteSub = async (req, res, next) => {
-  try {
-    const sub = await subModel.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    );
-    const selected = await facility.findById(req.params.facilityId);
-    let index = selected.sub.findIndex((sub) => sub._id === req.params.id);
-    selected.sub.splice(index, 1);
-    await selected.save();
-
-    res.status(204).json({
-      statusbar: "success",
-      message: "sub deleted successfully",
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
 //
 // =======================admin for approving a request=================
 
 // Endpoint for admins to approve or reject booking requests
 export const bookrequest = async (req, res) => {
+  if (req.body.status !== "Approved" || req.body.status === "Rejected") {
+    return res.status(400).json({
+      st: "fail",
+      message: "Invalid status",
+    });
+  }
   try {
     const bookingRequest = await BookingRequest.findById(req.params.id);
     let emailSubject;
@@ -248,19 +205,24 @@ export const bookrequest = async (req, res) => {
     if (!bookingRequest) {
       return res.status(404).json({ message: "Booking request not found" });
     }
-    if (req.body.status === "Approved") {
+    let facilityBooked = await facility.findOne({
+      facilityname: bookingRequest.facilityname,
+    });
+
+    // console.log(req.manager._id.toString(), facilityBooked.managerId);
+    if (req.manager._id.toString() === facilityBooked.managerId) {
       bookingRequest.status = req.body.status;
       await bookingRequest.save();
       // ============message========================
-      emailSubject = "Booking Confirmation";
-      emailBody = `<p>Dear ${bookingRequest.firstname},</p>
-                   <p>Your booking has been confirmed.</p>
-                   <p>Booking details:</p>
-                   <ul>
-                     <li>Facility: ${bookingRequest.subFacility}</li>
-                     <li>Date: ${bookingRequest.date}</li>
-                     <li>Time: ${bookingRequest.time}</li>
-                   </ul>`;
+      // emailSubject = "Booking Confirmation";
+      // emailBody = `<p>Dear ${bookingRequest.firstname},</p>
+      //              <p>Your booking has been confirmed.</p>
+      //              <p>Booking details:</p>
+      //              <ul>
+      //                <li>Facility: ${bookingRequest.subFacility}</li>
+      //                <li>Date: ${bookingRequest.date}</li>
+      //                <li>Time: ${bookingRequest.time}</li>
+      //              </ul>`;
       // ============================================
       res.json({ message: "Booking request approved successfully" });
     } else if (req.body.status === "Rejected") {
@@ -273,29 +235,31 @@ export const bookrequest = async (req, res) => {
       bookingRequest.rejectionReason = req.body.rejectionReason;
       await bookingRequest.save();
       // ===================mesage====================
-      emailSubject = "Booking Rejection";
-      emailBody = `<p>Dear ${bookingRequest.firstname},</p>
-               <p>Your booking has been rejected.</p>
-               <p>${req.body.rejectionReason}</p>`;
+      // emailSubject = "Booking Rejection";
+      // emailBody = `<p>Dear ${bookingRequest.email},</p>
+      //          <p>Your booking has been rejected.</p>
+      //          <p>${req.body.rejectionReason}</p>`;
       res.json({ message: "Booking request rejected successfully" });
     } else {
-      res.status(400).json({ message: "Invalid booking request status" });
+      res
+        .status(400)
+        .json({ message: "You are allowed to approve your facility booking" });
     }
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: bookingRequest.email,
-      subject: emailSubject,
-      html: emailBody,
-    };
+    // const mailOptions = {
+    //   from: process.env.EMAIL_USER,
+    //   to: bookingRequest.email,
+    //   subject: emailSubject,
+    //   html: emailBody,
+    // };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    });
+    // transporter.sendMail(mailOptions, (error, info) => {
+    //   if (error) {
+    //     console.error(error);
+    //   } else {
+    //     console.log("Email sent: " + info.response);
+    //   }
+    // });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to update booking request" });

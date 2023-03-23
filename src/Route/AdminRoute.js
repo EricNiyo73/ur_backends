@@ -9,8 +9,8 @@ import {
   updatefacility,
   upload,
   bookrequest,
-  deleteSub,
-  updateSub,
+  // deleteSub,
+  // updateSub,
   deleteAll,
 } from "../Controller/AdminController";
 import { createFacilityMiddleware } from "../middlewire/approvalandcreateFacilityMiddleware";
@@ -35,13 +35,13 @@ router.get("/:id", getfacilit);
 
 router.get("/", getfacility);
 
-router.delete("/facility/:facilityId/:id", Authorization, deleteSub);
-router.put(
-  "/facility/:facilityId/:id",
-  upload.single("image"),
-  Authorization,
-  updateSub
-);
+// router.delete("/facility/:facilityId/:id", Authorization, deleteSub);
+// router.put(
+//   "/facility/:facilityId/:id",
+//   upload.single("image"),
+//   Authorization,
+//   updateSub
+// );
 
 // change role
 router.patch("/Role/:id", userRole);
