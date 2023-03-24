@@ -1,4 +1,8 @@
 import mongoose from "mongoose";
+
+const myDate = new Date();
+const date = myDate.toUTCString();
+
 const bookUserSchema = new mongoose.Schema(
   {
     assistantData: {
@@ -39,8 +43,12 @@ const bookUserSchema = new mongoose.Schema(
     rejectionReason: {
       type: String,
     },
-  },
-  { timestamps: true }
+
+    date: {
+      type: String,
+      default: `${date}`,
+    },
+  }
 
   // bookNumbers: [{ number: Number, unavailableDates: {type: [Date]}}],
 );

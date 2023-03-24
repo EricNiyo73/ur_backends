@@ -14,7 +14,7 @@ import {
 // import accounts from "../middlewire/musthaveAccount";
 import Special_user from "../middlewire/verifySpecialUser";
 const router = express.Router();
-router.post("/signup", createUser);
+router.post("/signup", Special_user, createUser);
 router.post("/signupMany", createmany);
 router.delete("/deleteMany", deleteAll);
 router.post("/login", login);

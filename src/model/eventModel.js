@@ -1,22 +1,26 @@
 import mongoose from "mongoose";
+const myDate = new Date();
+const date = myDate.toUTCString();
 
 const eventSchema = new mongoose.Schema({
-
-    eventTitle:{
-        type: String,
-        rquired: true
-    },
-    eventContent:{
-        type: String,
-    },
-    eventImage:{
-        type: String,
-   
-    },
-    date: {
-        type: Date,
-        default: Date.now,
-     },
+  author: {
+    type: String,
+    required: true,
+  },
+  eventTitle: {
+    type: String,
+    rquired: true,
+  },
+  eventContent: {
+    type: String,
+  },
+  eventImage: {
+    type: String,
+  },
+  date: {
+    type: String,
+    default: `${date}`,
+  },
 });
 
-export default mongoose.model('eventModel', eventSchema);
+export default mongoose.model("eventModel", eventSchema);
