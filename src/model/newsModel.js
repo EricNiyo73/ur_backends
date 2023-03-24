@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 const myDate = new Date();
 const date = myDate.toUTCString();
 console.log(date);
-
 const newsSchema = new mongoose.Schema({
   author: {
     type: Object,
@@ -24,8 +23,8 @@ const newsSchema = new mongoose.Schema({
     type: Array,
   },
   date: {
-    type: Date,
-    default: date,
+    type: String,
+    default: `${date}`,
   },
 });
 export default mongoose.model("newsModel", newsSchema);
