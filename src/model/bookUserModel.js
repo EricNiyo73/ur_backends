@@ -5,6 +5,10 @@ const date = myDate.toUTCString();
 
 const bookUserSchema = new mongoose.Schema(
   {
+    assistantId: {
+      type: String,
+      required: true,
+    },
     assistantData: {
       type: Object,
       required: true,
@@ -37,7 +41,7 @@ const bookUserSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Approved", "Rejected", "canceled"],
+      enum: ["Pending", "Approved", "Rejected", "Canceled"],
       default: "Pending",
     },
     rejectionReason: {

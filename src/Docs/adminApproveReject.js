@@ -1,40 +1,46 @@
 /**
  * @swagger
- * /admin/booking-requests/{id}:
+ * /admin/booking/rejecting/{id}:
  *   patch:
- *     summary: Approve or reject a booking request
- *     tags: [Admin]
- *     description: This endpoint is used by administrators to approve or reject a booking request. An email notification will be sent to the user whose booking request was approved or rejected.
+ *     summary: Reject a booking request.
+ *     tags: [request]
+ *     description: Use this endpoint to reject a booking request.
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: id
+ *         in: path
  *         required: true
- *         description: The ID of the booking request to be approved or rejected
+ *         description: The ID of the booking request to reject.
  *         schema:
  *           type: string
  *     requestBody:
- *       description: The approval status of the booking request and optional message for rejected request
+ *       description: The request body should contain the rejection status and reason.
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - status
  *             properties:
  *               status:
  *                 type: string
- *                 enum: [Approved, Rejected]
- *                 description: The status to approve or reject the booking request
+ *                 enum:
+ *                   - Rejected
+ *                 description: The status to set for the booking request.
+ *               rejectionReason:
+ *                 type: string
+ *                 description: The reason for rejecting the booking request.
  *     responses:
  *       '200':
- *         description: Booking request approved or rejected successfully
+ *         description: Booking request rejected successfully.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: The success message.
  *       '400':
- *         description: Invalid booking request status
+ *         description: Invalid status or rejection reason not provided.
  *         content:
  *           application/json:
  *             schema:
@@ -42,15 +48,9 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   description: The error message indicating that the booking request status is invalid
+ *                   description: The error message.
  *       '404':
- *         description: Booking request not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *       '500':
- *         description: Failed to update booking request
+ *         description: Booking request not found.
  *         content:
  *           application/json:
  *             schema:
@@ -58,5 +58,85 @@
  *               properties:
  *                 message:
  *                   type: string
- *                   description: The error message indicating that the booking request failed to update
+ *                   description: The error message.
+ *       '500':
+ *         description: Failed to update booking request.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: The error message.
+ */
+
+/**
+ * @swagger
+ * /admin/booking/approving/{id}:
+ *   patch:
+ *     summary: Approve a booking request.
+ *     tags: [request]
+ *     description: Use this endpoint to approve a booking request.
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: The ID of the booking request to approve.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       description: The request body should contain the approval status.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum:
+ *                   - Approved
+ *                 description: The status to set for the booking request.
+ *     responses:
+ *       '200':
+ *         description: Booking request approved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: The success message.
+ *       '400':
+ *         description: Invalid status.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: The error message.
+ *       '404':
+ *         description: Booking request not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: The error message.
+ *       '500':
+ *         description: Failed to update booking request.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: The error message.
  */

@@ -94,30 +94,16 @@ export const updatefacility = async (req, res, next) => {
     if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path);
     }
-    let sub = [];
-    if (typeof req.body.sub === "object") {
-      for (let i = 0; i < req.body.sub.length; i++) {
-        sub.push(
-          new subModel({
-            sub: req.body.sub[i],
-          })
-        );
-      }
-    } else {
-      sub.push(
-        new subModel({
-          sub: req.body.sub,
-        })
-      );
-    }
 
     const updatedfacility = await facility.findByIdAndUpdate(
       req.params.id,
       {
         $set: {
           facilityname: req.body.facilityname,
-          sub: req.body.sub ? [...getfacility.sub].concat(sub) : facility.sub,
+          maxcapacity: req.body.maxcapacity,
           desc: req.body.desc,
+          contactPersonName: req.body.contactPersonName,
+          category: req.body.category,
           image: req.file ? result?.secure_url : facility.image,
         },
       },
@@ -180,28 +166,15 @@ export const deleteAll = async (req, res) => {
 };
 
 //
-// =======================admin for approving a request=================
 
-// Endpoint for admins to approve or reject booking requests
-export const bookrequest = async (req, res) => {
-  if (req.body.status !== "Approved" || req.body.status !== "Rejected") {
-    return res.status(400).json({
-      st: "fail",
-      message: "Invalid status",
-    });
-  }
+// =================================admin for approving request===================================
+
+export const approving = async (req, res) => {
   try {
+    if (req.body.status !== "Approved") {
+      return res.status(400).json({ message: "invalid status" });
+    }
     const bookingRequest = await BookingRequest.findById(req.params.id);
-    let emailSubject;
-    let emailBody;
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
     if (!bookingRequest) {
       return res.status(404).json({ message: "Booking request not found" });
     }
@@ -209,59 +182,64 @@ export const bookrequest = async (req, res) => {
       facilityname: bookingRequest.facilityname,
     });
 
-    // console.log(req.manager._id.toString(), facilityBooked.managerId);
-    if (req.manager._id.toString() === facilityBooked.managerId) {
-      if (req.body.status === "Approved") {
-        bookingRequest.status = req.body.status;
-        await bookingRequest.save();
-        // ============message========================
-        // emailSubject = "Booking Confirmation";
-        // emailBody = `<p>Dear ${bookingRequest.firstname},</p>
-        //              <p>Your booking has been confirmed.</p>
-        //              <p>Booking details:</p>
-        //              <ul>
-        //                <li>Facility: ${bookingRequest.fac}</li>
-        //                <li>Date: ${bookingRequest.date}</li>
-        //                <li>Time: ${bookingRequest.time}</li>
-        //              </ul>`;
-        // ============================================
-        res.json({ message: "Booking request approved successfully" });
-      } else if (req.body.status === "Rejected") {
-        if (!req.body.rejectionReason) {
-          return res
-            .status(400)
-            .json({ message: "Rejection reason is required" });
-        }
-        bookingRequest.status = req.body.status;
-        bookingRequest.rejectionReason = req.body.rejectionReason;
-        await bookingRequest.save();
-        // ===================mesage====================
-        // emailSubject = "Booking Rejection";
-        // emailBody = `<p>Dear ${bookingRequest.email},</p>
-        //          <p>Your booking has been rejected.</p>
-        //          <p>${req.body.rejectionReason}</p>`;
-        res.json({ message: "Booking request rejected successfully" });
-      }
-    } else {
-      res
-        .status(400)
-        .json({ message: "You are allowed to approve your facility booking" });
+    if (req.Manager._id.toString() === facilityBooked.managerId) {
+      bookingRequest.status = req.body.status;
+      await bookingRequest.save();
+      // ============message========================
+      // emailSubject = "Booking Confirmation";
+      // emailBody = `<p>Dear ${bookingRequest.firstname},</p>
+      //              <p>Your booking has been confirmed.</p>
+      //              <p>Booking details:</p>
+      //              <ul>
+      //                <li>Facility: ${bookingRequest.fac}</li>
+      //                <li>Date: ${bookingRequest.date}</li>
+      //                <li>Time: ${bookingRequest.time}</li>
+      //              </ul>`;
+      // ============================================
+      return res.json({ message: "Booking request Approved successfully" });
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to update booking request" });
+  }
+}; //
+// =======================admin for Rejecting a request=================
 
-    // const mailOptions = {
-    //   from: process.env.EMAIL_USER,
-    //   to: bookingRequest.email,
-    //   subject: emailSubject,
-    //   html: emailBody,
-    // };
+export const rejecting = async (req, res) => {
+  try {
+    if (req.body.status !== "Rejected") {
+      return res.status(400).json({ message: "invalid status" });
+    }
+    const bookingRequest = await BookingRequest.findById(req.params.id);
+    if (!bookingRequest) {
+      return res.status(404).json({ message: "Booking request not found" });
+    }
+    let facilityBooked = await facility.findOne({
+      facilityname: bookingRequest.facilityname,
+    });
 
-    // transporter.sendMail(mailOptions, (error, info) => {
-    //   if (error) {
-    //     console.error(error);
-    //   } else {
-    //     console.log("Email sent: " + info.response);
-    //   }
-    // });
+    if (req.Manager._id.toString() === facilityBooked.managerId) {
+      if (!req.body.rejectionReason) {
+        return res
+          .status(400)
+          .json({ message: "Rejection reason is required" });
+      }
+      bookingRequest.status = req.body.status;
+      bookingRequest.rejectionReason = req.body.rejectionReason;
+      await bookingRequest.save();
+      // ============message========================
+      // emailSubject = "Booking Confirmation";
+      // emailBody = `<p>Dear ${bookingRequest.firstname},</p>
+      //              <p>Your booking has been confirmed.</p>
+      //              <p>Booking details:</p>
+      //              <ul>
+      //                <li>Facility: ${bookingRequest.fac}</li>
+      //                <li>Date: ${bookingRequest.date}</li>
+      //                <li>Time: ${bookingRequest.time}</li>
+      //              </ul>`;
+      // ============================================
+      return res.json({ message: "Booking request rejected successfully" });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to update booking request" });

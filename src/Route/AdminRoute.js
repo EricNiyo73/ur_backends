@@ -12,6 +12,8 @@ import {
   // deleteSub,
   // updateSub,
   deleteAll,
+  rejecting,
+  approving,
 } from "../Controller/AdminController";
 import { createFacilityMiddleware } from "../middlewire/approvalandcreateFacilityMiddleware";
 
@@ -46,6 +48,8 @@ router.get("/", getfacility);
 // change role
 router.patch("/Role/:id", userRole);
 // appove
-router.patch("/booking-requests/:id", createFacilityMiddleware, bookrequest);
+router.patch("/booking/approving/:id", createFacilityMiddleware, approving);
+
+router.patch("/booking/rejecting/:id", createFacilityMiddleware, rejecting);
 
 export default router;

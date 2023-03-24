@@ -1,6 +1,8 @@
 import book from "../model/bookUserModel.js";
 import User from "../model/userModel.js";
 import nodemailer from "nodemailer";
+import BookingRequest from "../model/bookUserModel";
+import facility from "../model/AdminModel.js";
 
 // ==============check Availability====================
 
@@ -86,6 +88,7 @@ export const createbooking = async (req, res) => {
       } else {
         const bookingdata = {
           ...req.body,
+          assistantId: req.Administrative_Assistant._id,
           assistantData: req.assistantData,
         };
         // create a new booking
@@ -101,6 +104,7 @@ export const createbooking = async (req, res) => {
     } else {
       const bookingdata = {
         ...req.body,
+        assistantId: req.Administrative_Assistant._id,
         assistantData: req.assistantData,
       };
       // create a new booking
@@ -185,5 +189,39 @@ export const deleteAll = async (req, res) => {
       status: "fail",
       message: error.message,
     });
+  }
+};
+
+// =============================canceling a request=====================
+
+export const cancelbooking = async (req, res) => {
+  try {
+    const bookingRequest = await BookingRequest.findById(req.params.id);
+    if (
+      req.Administrative_Assistant._id.toString() === bookingRequest.assistantId
+    ) {
+      await book.findByIdAndUpdate(
+        req.params.id,
+        { $set: { status: "Cancelled" } },
+        { new: true }
+      );
+    } else {
+      return res.status(403).json({
+        status: "failed",
+        message: "you can't cancel this booking",
+      });
+    }
+    if (!bookingRequest) {
+      return res.status(404).json({
+        status: "failed",
+        message: "booking not found",
+      });
+    }
+    return res.status(204).json({
+      status: "success",
+      data: "booking cancelled successfuly",
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "failed", error });
   }
 };

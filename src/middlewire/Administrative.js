@@ -10,6 +10,7 @@ async function Authorization(req, res, next) {
       const user = await User.findById(decoded.id);
       if (user.role === "Administrative_Assistant") {
         req.assistantData = user;
+        req.Administrative_Assistant = user;
         next();
       } else {
         return res.status(401).json({

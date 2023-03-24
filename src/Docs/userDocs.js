@@ -43,10 +43,6 @@
  *         - emailToken
  */
 
-
-
-
-
 /**
  * @swagger
  * /user/signup:
@@ -151,7 +147,6 @@
  *         description: Unexpected error
  */
 
-
 // =====================get all=========================
 
 /**
@@ -238,7 +233,6 @@
  *         description: User not found
  */
 
-
 /**
  * @swagger
  * /user/{id}:
@@ -261,4 +255,39 @@
  *         description: users item not found
  *       500:
  *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /userbooking/cancel/{id}:
+ *   patch:
+ *     summary: Cancel a booking request
+ *     tags:
+ *       - Booking
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The id of the booking request to cancel
+ *     requestBody:
+ *       description: Request body for canceling booking request
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 default: Cancelled
+ *     responses:
+ *       204:
+ *         description: Booking cancelled successfully
+ *       400:
+ *         description: Failed to cancel booking request
+ *       403:
+ *         description: You can't cancel this booking
+ *       404:
+ *         description: Booking not found
  */

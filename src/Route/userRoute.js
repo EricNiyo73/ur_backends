@@ -14,13 +14,13 @@ import {
 // import accounts from "../middlewire/musthaveAccount";
 import Special_user from "../middlewire/verifySpecialUser";
 const router = express.Router();
-router.post("/signup", Special_user, createUser);
+router.post("/signup", createUser);
 router.post("/signupMany", createmany);
 router.delete("/deleteMany", deleteAll);
 router.post("/login", login);
 router.get("/:id", getOne);
 router.get("/", getAll);
 router.get("/verify-email/:token", verifyEmail);
-router.put("/:id", upload.single("userImage"), Special_user, updateUser);
+router.put("/:id", upload.single("userImage"), updateUser);
 router.delete("/:id", Special_user, deleteUser);
 export default router;

@@ -8,6 +8,7 @@ import {
   checkAvailability,
   updatebook,
   deleteAll,
+  cancelbooking,
 } from "../Controller/bookUserController";
 // import accounts from '../middlewire/musthaveAccount';
 import Authorization from "../middlewire/Administrative";
@@ -16,6 +17,7 @@ router.post("/createbook/", Authorization, createbooking);
 router.put("/checkAvailability", checkAvailability);
 //UPDATE
 router.put("/:id", Authorization, updatebook);
+router.patch("/cancel/:id", Authorization, cancelbooking);
 //DELETE
 router.delete("/:id", Authorization, deletebook);
 router.delete("/book/deleteManyBooking", deleteAll);
