@@ -1,30 +1,31 @@
 import mongoose from "mongoose";
+const myDate = new Date();
+const date = myDate.toUTCString();
+console.log(date);
 
 const newsSchema = new mongoose.Schema({
-
-    newsTitle:{
-        type: String,
-        required: true,
-        unique: true,
-    },
-    newsContent:{
-        type: String,
-        required: false,
-    },
-    newsImage:{
-        type: String,
-        required: false,
-    },
-    category: {
-        type: String,
-        required: true
-    },
-    comments:{
-        type:Array
-      },
-    date: {
-        type: Date,
-        default: Date.now,
-     },
+  author: {
+    type: Object,
+  },
+  newsTitle: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  newsContent: {
+    type: String,
+    required: false,
+  },
+  newsImage: {
+    type: String,
+    required: false,
+  },
+  comments: {
+    type: Array,
+  },
+  date: {
+    type: Date,
+    default: date,
+  },
 });
-export default mongoose.model('newsModel', newsSchema);
+export default mongoose.model("newsModel", newsSchema);

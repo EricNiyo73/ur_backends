@@ -9,6 +9,7 @@ async function Special_user(req, res, next) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id);
       if (user.role === "Special_user") {
+        req.Special_user = user;
         next();
       } else {
         return res.status(401).json({
