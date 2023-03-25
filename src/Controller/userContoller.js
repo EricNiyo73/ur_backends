@@ -111,9 +111,19 @@ export const createUser = async (req, res) => {
           });
         });
       console.log(req.body);
-
+      let emailSubject = "Email verification";
+      let emailBody = `<p>Dear ${newUser.fullname},</p>
+               <p>You have registered on our site.</p>
+               <p>Please verify your email to continue...</p>
+               <a href="http://${req.headers.host}/user/verify-email/${newUser.emailToken}">Verify Email</a>`;
+      const mailOption = {
+        from: process.env.EMAIL_USER,
+        to: newUser.email,
+        subject: emailSubject,
+        html: emailBody,
+      };
       //sending email
-      transporter.sendMail(mailOptions(newUser), (error, info) => {
+      transporter.sendMail(mailOption, (error, info) => {
         if (error) {
           console.error(error);
         } else {

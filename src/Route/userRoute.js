@@ -22,5 +22,5 @@ router.get("/:id", getOne);
 router.get("/", getAll);
 router.get("/verify-email/:token", verifyEmail);
 router.put("/:id", upload.single("userImage"), updateUser);
-router.delete("/:id", Special_user, deleteUser);
+router.delete("/:id", deleteUser);
 export default router;

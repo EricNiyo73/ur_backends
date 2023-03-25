@@ -32,8 +32,7 @@
  *           description: The maximum capacity of the facility.
  *           required: true
  *         managerId:
- *
-
+ */
 
 /**
  * @swagger
