@@ -64,7 +64,6 @@ export const createfacility = async (req, res, next) => {
       desc: req.body.desc,
       contactPersonName: req.body.contactPersonName,
       category: req.body.category,
-      desc: req.body.desc,
       managerId: req.Manager._id,
       image: result.secure_url,
     });
