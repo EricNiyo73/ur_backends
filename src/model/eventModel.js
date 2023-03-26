@@ -17,10 +17,13 @@ const eventSchema = new mongoose.Schema({
   eventImage: {
     type: String,
   },
-  startDate: {
+  startTime: {
     type: String,
   },
-  endDate: {
+  endTime: {
+    type: Date,
+  },
+  eventDate: {
     type: Date,
   },
   date: {

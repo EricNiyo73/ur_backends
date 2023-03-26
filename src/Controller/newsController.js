@@ -86,7 +86,7 @@ export const createNews = async (req, res) => {
         to: user.email,
         subject: emailSubject,
         html: `<p>Dear ${user.name},</p>${emailBody}
-          <a href="http://${req.headers.host}/news/">Please click on the link to view the news</a>`,
+          <a href="https://ur-app.vercel.app/">Please click on the link to view the news</a>`,
       };
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {

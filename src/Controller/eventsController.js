@@ -90,7 +90,7 @@ export const createEvent = async (req, res) => {
         subject: emailSubject,
         html: `<p>Dear ${user.name}</p>
     <p>${emailBody}</p>
-    <a href="http://${req.headers.host}/events/">Please click on the link to view the Events</a>`,
+    <a href="https://ur-app.vercel.app/">Please click on the link to view the Events</a>`,
       };
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {

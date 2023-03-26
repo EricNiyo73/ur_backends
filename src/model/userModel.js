@@ -28,6 +28,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  passwordResetToken: {
+    type: String,
+  },
+  passwordResetExpires: {
+    type: Date,
+  },
   isVerified: {
     type: Boolean,
     enum: [true, false],
@@ -48,11 +54,11 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre("save", async function (next) {
-  const user = this;
-  if (!user.isModified("password")) return next();
-  user.password = await bcrypt.hash(user.password, 10);
-  next();
-});
+// userSchema.pre("save", async function (next) {
+//   const user = this;
+//   if (!user.isModified("password")) return next();
+//   user.password = await bcrypt.hash(user.password, 10);
+//   next();
+// });
 
 export default mongoose.model("userModel", userSchema);

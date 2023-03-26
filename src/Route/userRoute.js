@@ -10,6 +10,8 @@ import {
   verifyEmail,
   createmany,
   deleteAll,
+  resetPassword,
+  resetPasswordConfirm,
 } from "../Controller/userContoller";
 // import accounts from "../middlewire/musthaveAccount";
 import Special_user from "../middlewire/verifySpecialUser";
@@ -21,6 +23,8 @@ router.post("/login", login);
 router.get("/:id", getOne);
 router.get("/", getAll);
 router.get("/verify-email/:token", verifyEmail);
-router.put("/:id", upload.single("userImage"), updateUser);
+router.post("/reset-password/reset/", resetPassword);
+router.post("/reset-password/:token", resetPasswordConfirm);
+router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 export default router;

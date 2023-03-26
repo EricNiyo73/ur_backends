@@ -370,3 +370,92 @@ export const deleteAll = async (req, res) => {
     });
   }
 };
+
+// ===============================RESET PASSWORD================================
+export const resetPassword = async (req, res) => {
+  try {
+    // Find user with matching email
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    // Generate password reset token
+    const resetToken = crypto.randomBytes(64).toString("hex");
+    user.passwordResetToken = resetToken;
+    user.passwordResetExpires = Date.now() + 3600000; // 1 hour
+
+    // Save user with updated password reset token and expiration
+    await user.save();
+
+    // Send password reset email
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+    const emailSubjects = "Password Reset Request";
+    const emailBodys = `<p>You have requested a password reset for your account.</p>
+                       <p>Please click the link below to reset your password:</p>
+                       <a href="http://${req.headers.host}/reset-password/${resetToken}">Reset Password</a>`;
+    const mailOption = {
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: emailSubjects,
+      html: emailBodys,
+    };
+    transporter.sendMail(mailOption, (error, info) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({
+          message: "Error sending password reset email",
+        });
+      } else {
+        console.log("Password reset email sent: " + info.response);
+        return res.status(200).json({
+          message: "Password reset email sent",
+        });
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Unexpected error",
+    });
+  }
+};
+
+export const resetPasswordConfirm = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    // Find the user with the given password reset token
+    const user = await User.findOne({ passwordResetToken: token });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "Invalid or expired password reset token." });
+    }
+
+    // Update the user's password and clear the password reset token
+    user.password = password;
+    user.passwordResetToken = undefined;
+    await user.save();
+
+    // Return a success message
+    return res.json({ message: "Password reset successful." });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Unexpected error occurred." });
+  }
+};

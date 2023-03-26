@@ -5,12 +5,9 @@
  *     UserModel:
  *       type: object
  *       properties:
- *         firstname:
+ *         fullname:
  *           type: string
  *           description: First name of the user
- *         lastname:
- *           type: string
- *           description: Last name of the user
  *         email:
  *           type: string
  *           description: Email of the user
@@ -48,27 +45,28 @@
  * /user/signup:
  *   post:
  *     summary: Create a new user
- *     description: Creates a new user account and sends a verification email
+ *     description: Creates a new user and sends email verification
  *     tags:
- *       - users
+ *       - Users
  *     requestBody:
+ *       description: User object to be created
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
  *             properties:
- *               firstname:
- *                 type: string
- *               lastname:
+ *               fullname:
  *                 type: string
  *               email:
+ *                 type: string
+ *               role:
  *                 type: string
  *               password:
  *                 type: string
  *     responses:
  *       '200':
- *         description: User account created successfully
+ *         description: A successful response, returns the newly created user
  *         content:
  *           application/json:
  *             schema:
@@ -76,30 +74,11 @@
  *               properties:
  *                 status:
  *                   type: string
- *                   description: Status of the response
  *                 data:
  *                   type: object
- *                   description: Response data
  *                   properties:
  *                     user:
  *                       type: object
- *                       description: Created user object
- *                       properties:
- *                         _id:
- *                           type: string
- *                           description: Unique ID of the user
- *                         firstname:
- *                           type: string
- *                           description: First name of the user
- *                         lastname:
- *                           type: string
- *                           description: Last name of the user
- *                         email:
- *                           type: string
- *                           description: Email address of the user
- *                         emailToken:
- *                           type: string
- *                           description: Verification token for the user's email address
  *       '400':
  *         description: Invalid email format
  *       '409':
@@ -256,14 +235,13 @@
  *       500:
  *         description: Internal server error
  */
-
 /**
  * @swagger
  * /userbooking/cancel/{id}:
  *   patch:
  *     summary: Cancel a booking request
  *     tags:
- *       - Booking
+ *       - request
  *     parameters:
  *       - in: path
  *         name: id
