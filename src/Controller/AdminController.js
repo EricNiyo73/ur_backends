@@ -171,16 +171,16 @@ export const deleteAll = async (req, res) => {
 
 export const approving = async (req, res) => {
   try {
-    // let emailSubject;
-    // let emailBody;
-    // const transporter = nodemailer.createTransport({
-    //   host: "smtp.gmail.com",
-    //   port: 587,
-    //   auth: {
-    //     user: process.env.EMAIL_USER,
-    //     pass: process.env.EMAIL_PASS,
-    //   },
-    // });
+    let emailSubject;
+    let emailBody;
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
     if (req.body.status !== "Approved") {
       return res.status(400).json({ message: "invalid status" });
     }
@@ -269,15 +269,10 @@ export const rejecting = async (req, res) => {
       bookingRequest.rejectionReason = req.body.rejectionReason;
       await bookingRequest.save();
       // ============message========================
-      emailSubjects = "Booking Confirmation";
-      emailBodys = `<p>Dear ${bookingRequest.fullname},</p>
-                   <p>Your booking has been confirmed.</p>
-                   <p>Booking details:</p>
-                   <ul>
-                     <li>Facility: ${bookingRequest.facilityname}</li>
-                     <li>Date: ${bookingRequest.date}</li>
-                     <li>Time: ${bookingRequest.time}</li>
-                   </ul>`;
+      emailSubjects = "Booking Rejection";
+      emailBodys = `<p>Dear ${bookingRequest.fullname}</p>
+               <p>Your booking has been rejected.</p>
+               <p>${req.body.rejectionReason}</p>`;
       // ============================================
       const mailOption = {
         from: process.env.EMAIL_USER,
