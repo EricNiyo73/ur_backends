@@ -68,20 +68,20 @@ export const bookrequest = async (req, res) => {
         .json({ message: "You are allowed to approve your facility booking" });
     }
 
-    // const mailOptions = {
-    //   from: process.env.EMAIL_USER,
-    //   to: bookingRequest.email,
-    //   subject: emailSubject,
-    //   html: emailBody,
-    // };
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: bookingRequest.email,
+      subject: emailSubject,
+      html: emailBody,
+    };
 
-    // transporter.sendMail(mailOptions, (error, info) => {
-    //   if (error) {
-    //     console.error(error);
-    //   } else {
-    //     console.log("Email sent: " + info.response);
-    //   }
-    // });
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to update booking request" });
