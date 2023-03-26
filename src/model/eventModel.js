@@ -21,10 +21,10 @@ const eventSchema = new mongoose.Schema({
     type: String,
   },
   endDate: {
-    type: String,
+    type: Date,
   },
   date: {
-    type: String,
+    type: Date,
     default: `${date}`,
   },
 });

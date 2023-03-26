@@ -8,7 +8,6 @@ import {
   getfacilit,
   updatefacility,
   upload,
-  bookrequest,
   // deleteSub,
   // updateSub,
   deleteAll,
