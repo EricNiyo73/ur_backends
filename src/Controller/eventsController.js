@@ -73,6 +73,8 @@ export const createEvent = async (req, res) => {
       eventImage: result.secure_url,
       eventTitle: req.body.eventTitle,
       eventContent: req.body.eventContent,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
       author: req.Special_user.fullname,
     });
     const saveEvent = await newevent.save();
@@ -156,6 +158,8 @@ export const updateEvent = async (req, res) => {
         eventTitle: req.body.eventTitle,
         eventContent: req.body.eventContent,
         eventImage: result.secure_url,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate,
       },
       { new: true }
     );
