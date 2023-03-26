@@ -140,24 +140,6 @@ export const updatebook = async (req, res, next) => {
 
 //   ==============================delete ==========================
 
-export const deletebook = async (req, res) => {
-  try {
-    const booking = await book.findByIdAndDelete(req.params.id);
-    if (!booking) {
-      return res.status(404).json({
-        status: "failed",
-        message: "booking not found",
-      });
-    }
-    return res.status(204).json({
-      status: "success",
-      data: "booking deleted successfuly",
-    });
-  } catch (error) {
-    return res.status(400).json({ status: "failed", error });
-  }
-};
-
 //   ==============================get one book================================
 export const getbook = async (req, res, next) => {
   try {
