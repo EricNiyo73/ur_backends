@@ -29,8 +29,8 @@ router.post(
 //UPDATE
 router.put("/:id", upload.single("image"), Authorization, updatefacility);
 //DELETE
-// router.delete("/:id", deletefacility);
-router.delete("/deleteMany/", deleteAll);
+router.delete("/:id", deletefacility);
+router.delete("/facility/deleteMany/", deleteAll);
 //GET ALL
 router.get("/:id", getfacilit);
 

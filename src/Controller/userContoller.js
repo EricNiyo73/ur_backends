@@ -218,11 +218,11 @@ export const login = async (req, res) => {
     // const validated = await bcrypt.compare(req.body.password, user.password);
 
     if (user.password !== req.body.password) {
-      return res.status(403).json("Invalid Email or Password!");
+      return res.status(400).json("Invalid Email or Password!");
     }
 
     if (!user) {
-      return res.status(403).json("Invalid Email or Username!");
+      return res.status(400).json("Invalid Email or Username!");
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "24h",

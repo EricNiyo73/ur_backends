@@ -5,6 +5,12 @@ const date = myDate.toUTCString();
 
 const bookUserSchema = new mongoose.Schema(
   {
+    fullname: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
     assistantId: {
       type: String,
       required: true,

@@ -88,6 +88,8 @@ export const createbooking = async (req, res) => {
       } else {
         const bookingdata = {
           ...req.body,
+          fullname: req.Administrative_Assistant.fullname,
+          email: req.Administrative_Assistant.email,
           assistantId: req.Administrative_Assistant._id,
           assistantData: req.assistantData,
         };
@@ -104,6 +106,8 @@ export const createbooking = async (req, res) => {
     } else {
       const bookingdata = {
         ...req.body,
+        fullname: req.Administrative_Assistant.fullname,
+        email: req.Administrative_Assistant.email,
         assistantId: req.Administrative_Assistant._id,
         assistantData: req.assistantData,
       };

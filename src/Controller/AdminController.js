@@ -65,7 +65,7 @@ export const createfacility = async (req, res, next) => {
       contactPersonName: req.body.contactPersonName,
       category: req.body.category,
       desc: req.body.desc,
-      managerId: req.manager._id,
+      managerId: req.Manager._id,
       image: result.secure_url,
     });
     return res.status(201).json({
@@ -171,16 +171,16 @@ export const deleteAll = async (req, res) => {
 
 export const approving = async (req, res) => {
   try {
-    let emailSubjects;
-    let emailBodys;
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    // let emailSubject;
+    // let emailBody;
+    // const transporter = nodemailer.createTransport({
+    //   host: "smtp.gmail.com",
+    //   port: 587,
+    //   auth: {
+    //     user: process.env.EMAIL_USER,
+    //     pass: process.env.EMAIL_PASS,
+    //   },
+    // });
     if (req.body.status !== "Approved") {
       return res.status(400).json({ message: "invalid status" });
     }
@@ -196,8 +196,8 @@ export const approving = async (req, res) => {
       bookingRequest.status = req.body.status;
       await bookingRequest.save();
       // ============message========================
-      emailSubjects = "Booking Confirmation";
-      emailBodys = `<p>Dear ${bookingRequest.fullname},</p>
+      emailSubject = "Booking Confirmation";
+      emailBody = `<p>Dear ${bookingRequest.fullname},</p>
                    <p>Your booking has been confirmed.</p>
                    <p>Booking details:</p>
                    <ul>
@@ -209,22 +209,26 @@ export const approving = async (req, res) => {
                    <p>Thank you for your booking.</p>`;
       // ===========================`;
       // ============================================
-      return res.json({ message: "Booking request Approved successfully" });
-    }
-    const mailOption = {
-      from: process.env.EMAIL_USER,
-      to: bookingRequest.email,
-      subject: emailSubjects,
-      html: emailBodys,
-    };
+      const mailOption = {
+        from: process.env.EMAIL_USER,
+        to: bookingRequest.email,
+        subject: emailSubject,
+        html: emailBody,
+      };
 
-    transporter.sendMail(mailOption, (error, info) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    });
+      transporter.sendMail(mailOption, (error, info) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+      return res.json({ message: "Booking request Approved successfully" });
+    } else {
+      return res
+        .status(400)
+        .json({ message: "You are not the manager of this facility" });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to update booking request" });
@@ -275,23 +279,22 @@ export const rejecting = async (req, res) => {
                      <li>Time: ${bookingRequest.time}</li>
                    </ul>`;
       // ============================================
+      const mailOption = {
+        from: process.env.EMAIL_USER,
+        to: bookingRequest.email,
+        subject: emailSubjects,
+        html: emailBodys,
+      };
+
+      transporter.sendMail(mailOption, (error, info) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
       return res.json({ message: "Booking request rejected successfully" });
     }
-
-    const mailOption = {
-      from: process.env.EMAIL_USER,
-      to: bookingRequest.email,
-      subject: emailSubjects,
-      html: emailBodys,
-    };
-
-    transporter.sendMail(mailOption, (error, info) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to update booking request" });
