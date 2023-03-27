@@ -88,7 +88,7 @@ export const createEvent = async (req, res) => {
         from: process.env.EMAIL_USER,
         to: user.email,
         subject: emailSubject,
-        html: `<p>Dear ${user.name}</p>
+        html: `<p>Dear ${user.email}</p>
     <p>${emailBody}</p>
     <a href="https://ur-app.vercel.app/">Please click on the link to view the Events</a>`,
       };
