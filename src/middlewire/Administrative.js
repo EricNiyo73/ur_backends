@@ -13,7 +13,7 @@ async function Authorization(req, res, next) {
         req.Administrative_Assistant = user;
         next();
       } else {
-        return res.status(401).json({
+        return res.status(403).json({
           message:
             "Only Administrative assistant is allowed to book a facility",
         });

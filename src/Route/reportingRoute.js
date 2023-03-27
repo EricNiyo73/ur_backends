@@ -1,0 +1,15 @@
+import express from "express";
+import { boookingReport } from "../Report/bookingReport";
+import { eventReport } from "../Report/eventReport";
+import { facilityReport } from "../Report/facilityReport";
+import { newsReport } from "../Report/newsReport";
+import { subscribers } from "../Report/subscriberReport";
+import { userReport } from "../Report/usersReport";
+const router = express.Router();
+router.get("/generate-report/event", eventReport);
+router.get("/generate-report/booking", boookingReport);
+router.get("/generate-report/news", newsReport);
+router.get("/generate-report/facility", facilityReport);
+router.get("/generate-report/user", userReport);
+router.get("/generate-report/subscriber", subscribers);
+export default router;
