@@ -55,7 +55,15 @@ export const createfacility = async (req, res, next) => {
   console.log(req.manager);
   try {
     if (!req.file) return res.send("Please upload a file");
-
+    const existingfacility = await facility.findOne({
+      facilityname: req.body.facilityname,
+    });
+    if (existingfacility) {
+      return res.status(302).json({
+        status: "fail",
+        message: "facility already exists",
+      });
+    }
     const result = await cloudinary.uploader.upload(req.file.path);
 
     const newfacility = await facility.create({
@@ -225,7 +233,7 @@ export const approving = async (req, res) => {
       return res.json({ message: "Booking request Approved successfully" });
     } else {
       return res
-        .status(400)
+        .status(406)
         .json({ message: "You are not the manager of this facility" });
     }
   } catch (error) {

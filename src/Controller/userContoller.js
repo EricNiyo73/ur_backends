@@ -83,7 +83,7 @@ export const createUser = async (req, res) => {
       });
     }
     if (existingEmail) {
-      return res.status(409).json({
+      return res.status(302).json({
         message: "Email  already exists",
       });
     } else {
