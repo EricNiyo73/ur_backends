@@ -48,6 +48,18 @@ export let upload = multer({
 // =============================Create a News=====================
 export const createNews = async (req, res) => {
   try {
+    const existtitle = await News.findOne({ newsTitle: req.body.newsTitle });
+    if (existtitle) {
+      return res.status(302).json({
+        message: "News Title already exists",
+      });
+    }
+    const category = await News.findOne({ category: req.body.category });
+    if (category) {
+      return res.status(302).json({
+        message: " facility Category already exists",
+      });
+    }
     // create a notification=============================
     let emailSubject;
 
