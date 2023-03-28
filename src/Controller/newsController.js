@@ -158,14 +158,10 @@ export const getOne = async (req, res) => {
 };
 // ======================Delete==============================
 export const deleteNews = async (req, res) => {
+  const news = await News.findById(req.params.id);
   try {
-    const news = await News.findById(req.params.id);
-    try {
-      await news.delete();
-      return res.status(200).json("news has been deleted...");
-    } catch (err) {
-      return res.status(500).json(err);
-    }
+    await news.delete();
+    return res.status(200).json("news has been deleted...");
   } catch (err) {
     return res.status(500).json(err);
   }
