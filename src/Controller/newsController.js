@@ -54,12 +54,6 @@ export const createNews = async (req, res) => {
         message: "News Title already exists",
       });
     }
-    const category = await News.findOne({ category: req.body.category });
-    if (category) {
-      return res.status(302).json({
-        message: " facility Category already exists",
-      });
-    }
     // create a notification=============================
     let emailSubject;
 

@@ -12,7 +12,6 @@ const bookAdminSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    unique: true,
   },
   desc: {
     type: String,
