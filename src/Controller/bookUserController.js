@@ -65,7 +65,7 @@ export const createbooking = async (req, res) => {
         existingBooking.status === "Approved"
       ) {
         return res
-          .status(403)
+          .status(406)
           .json("No available booking for the specified date and time1");
       } else if (
         existingBooking.time === "Afternoon" &&
@@ -73,7 +73,7 @@ export const createbooking = async (req, res) => {
         existingBooking.status === "Approved"
       ) {
         return res
-          .status(403)
+          .status(406)
           .json("No available booking for the specified date and time2");
       } else if (
         existingBooking.time === "Fullday" &&
@@ -83,7 +83,7 @@ export const createbooking = async (req, res) => {
         existingBooking.status === "Approved"
       ) {
         return res
-          .status(404)
+          .status(406)
           .json("No available booking for the specified date and time tird");
       } else {
         const bookingdata = {
