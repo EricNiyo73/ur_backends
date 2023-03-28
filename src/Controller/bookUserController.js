@@ -83,7 +83,7 @@ export const createbooking = async (req, res) => {
         existingBooking.status === "Approved"
       ) {
         return res
-          .status(403)
+          .status(404)
           .json("No available booking for the specified date and time tird");
       } else {
         const bookingdata = {
