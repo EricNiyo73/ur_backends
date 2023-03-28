@@ -15,6 +15,7 @@ import {
 } from "../Controller/userContoller";
 // import accounts from "../middlewire/musthaveAccount";
 import Special_user from "../middlewire/verifySpecialUser";
+import fileupload from "../helpers/multer";
 const router = express.Router();
 router.post("/signup", createUser);
 router.post("/signupMany", createmany);
@@ -25,6 +26,6 @@ router.get("/", getAll);
 router.get("/verify-email/:token", verifyEmail);
 router.post("/reset-password/reset/", resetPassword);
 router.post("/reset-password/:token", resetPasswordConfirm);
-router.put("/:id", updateUser);
+router.put("/:id", fileupload.single("userImage"), updateUser);
 router.delete("/:id", deleteUser);
 export default router;

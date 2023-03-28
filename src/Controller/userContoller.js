@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import multer from "multer";
 const path = require("path");
 import Router from "express";
+import { uploadToCloud } from "../helpers/cloud";
 import express from "express";
 const router = Router();
 import bodyParser from "body-parser";
@@ -261,7 +262,12 @@ export const getAll = (req, res) => {
 // ====================update==============================
 export const updateUser = async (req, res) => {
   try {
-    const result = await cloudinary.uploader.upload(req.file.path);
+    const updatedUse = await User.findById(req.params.id);
+    if (!updatedUse) {
+      return res.status(404).json({ error: "user not found" });
+    }
+    // if (!req.file) return res.send("Please upload a file");
+    const result = await uploadToCloud(req.file, res);
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       {
@@ -275,12 +281,15 @@ export const updateUser = async (req, res) => {
       },
       { new: true }
     );
-    if (!updatedUser) {
-      return res.status(404).json({ error: "user not found" });
-    }
+    console.log(req.file);
     return res.status(200).json(updatedUser);
   } catch (err) {
-    res.status(500).json(err);
+    if (err.code === "Cannot set headers after they are sent to the client") {
+      console.error(err);
+      return res.status(500).json({
+        message: "Unexpected error",
+      });
+    }
   }
 };
 

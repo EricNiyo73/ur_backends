@@ -116,18 +116,10 @@ export const createNews = async (req, res) => {
 // =====================get All news======================
 
 export const findAll = async (req, res) => {
-  const catName = req.query.cat;
   try {
     let news;
-    if (catName) {
-      news = await News.find({
-        category: {
-          $in: [catName],
-        },
-      });
-    } else {
-      news = await News.find();
-    }
+    news = await News.find();
+
     return res.status(200).json({
       data: news,
     });
