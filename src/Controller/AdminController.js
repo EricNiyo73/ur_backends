@@ -296,6 +296,10 @@ export const rejecting = async (req, res) => {
         }
       });
       return res.json({ message: "Booking request rejected successfully" });
+    } else {
+      return res
+        .status(406)
+        .json({ message: "You are not the manager of this facility" });
     }
   } catch (error) {
     console.error(error);
