@@ -267,7 +267,10 @@ export const updateUser = async (req, res) => {
       return res.status(404).json({ error: "user not found" });
     }
     // if (!req.file) return res.send("Please upload a file");
-    const result = await uploadToCloud(req.file, res);
+    let result;
+    if (req.file) {
+      result = await uploadToCloud(req.file, res);
+    }
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       {
@@ -276,7 +279,7 @@ export const updateUser = async (req, res) => {
           fullname: req.body.fullname,
           password: req.body.password,
           role: req.body.role,
-          userImage: result.secure_url,
+          userImage: result ? result.secure_url : updatedUse.user,
         },
       },
       { new: true }
