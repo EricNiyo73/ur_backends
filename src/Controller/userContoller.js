@@ -279,7 +279,7 @@ export const updateUser = async (req, res) => {
           fullname: req.body.fullname,
           password: req.body.password,
           role: req.body.role,
-          userImage: result ? result.secure_url : updatedUse.user,
+          userImage: result ? result.secure_url : updatedUse.userImage,
         },
       },
       { new: true }
