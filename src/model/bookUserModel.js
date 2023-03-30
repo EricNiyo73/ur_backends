@@ -17,7 +17,7 @@ const bookUserSchema = new mongoose.Schema(
     },
     assistantData: {
       type: Object,
-      required: true,
+      // required: true,
     },
     facilityname: {
       type: String,
@@ -31,11 +31,18 @@ const bookUserSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    contactPersonName:{
+     type:String,
+     required:true
+    },
     purpose: {
       type: String,
       required: true,
     },
-
+    managerId: {
+      type: String,
+      required: true,
+    },
     date: {
       type: Date,
       required: true,

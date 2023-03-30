@@ -73,8 +73,8 @@ export const createEvent = async (req, res) => {
       eventImage: result.secure_url,
       eventTitle: req.body.eventTitle,
       eventContent: req.body.eventContent,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
+      startTime: req.body.startTime,
+      endTime: req.body.endTime,
       author: req.Special_user.fullname,
     });
     const saveEvent = await newevent.save();
@@ -151,15 +151,23 @@ export const deleteEvent = async (req, res) => {
 // ===============Update=============================
 export const updateEvent = async (req, res) => {
   try {
-    const result = await cloudinary.uploader.upload(req.file.path);
+    const updateevent = await eventModel.findById(req.params.id);
+    if (!updateevent) {
+      return res.status(404).json("Event not found");
+    }
+    // const result = await cloudinary.uploader.upload(req.file.path);
+    let result;
+    if (req.file) {
+      result = await cloudinary.uploader.upload(req.file.path);
+    }
     const updatedEvent = await eventModel.findByIdAndUpdate(
       req.params.id,
       {
         eventTitle: req.body.eventTitle,
         eventContent: req.body.eventContent,
-        eventImage: result.secure_url,
-        startDate: req.body.startDate,
-        endDate: req.body.endDate,
+        eventImage: result ? result.secure_url : updateevent.eventImage,
+        endTime: req.body.endTime,
+        startTime: req.body.startTime,
       },
       { new: true }
     );

@@ -177,6 +177,7 @@ export const createmany = async (req, res, next) => {
         fullname: req.body[index].fullname,
         email: req.body[index].email,
         role: req.body[index].role,
+        password:req.body[index].password,
         emailToken: crypto.randomBytes(64).toString("hex"),
       });
     }

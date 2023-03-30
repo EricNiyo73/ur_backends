@@ -10,7 +10,14 @@ export default async (req, res, next) => {
     if (token) {
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decodedToken.id);
-      next();
+      if (user) {
+        req.user = user;
+        next();
+      } else {
+        return res.status(401).json({
+          message: "UnAuthorized",
+        });
+      }
     } else {
       return res.status(403).json({ message: "please! create an account" });
     }

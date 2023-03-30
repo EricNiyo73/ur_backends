@@ -25,7 +25,7 @@ async function Authorization(req, res, next) {
       });
     }
   } catch (error) {
-    return res.status(400).json({
+    return res.status(401).json({
       message: "Invalid token",
     });
   }

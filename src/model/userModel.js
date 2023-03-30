@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-const myDate = new Date();
-const date = myDate.toUTCString();
 
 const userSchema = new mongoose.Schema({
   userImage: {
@@ -11,6 +9,7 @@ const userSchema = new mongoose.Schema({
   },
   fullname: {
     type: String,
+    unique: true,
     required: true,
   },
   email: {
@@ -47,10 +46,11 @@ const userSchema = new mongoose.Schema({
       "Manager",
       "Special_user",
     ],
+    default: "Tecnical_Support",
   },
   date: {
     type: String,
-    default: `${date}`,
+    default: Date.now,
   },
 });
 

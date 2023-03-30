@@ -19,6 +19,7 @@ router.use(bodyParser.json());
 
 // ============Claudinary configuration=================
 import { v2 as cloudinary } from "cloudinary";
+import commentModel from "../model/commentModel.js";
 cloudinary.config({
   cloud_name: process.env.CLOUDNAME,
   api_key: process.env.API_KEY,
@@ -163,13 +164,17 @@ export const deleteNews = async (req, res) => {
 export const updateNews = async (req, res) => {
   try {
     // const { id } = req.params;
-    const result = await cloudinary.uploader.upload(req.file.path);
+    const updatednew = await News.findById(req.params.id);
+    let result;
+    if (req.file) {
+      result = await cloudinary.uploader.upload(req.file.path);
+    }
     const updatedNews = await News.findByIdAndUpdate(
       req.params.id,
       {
         newsTitle: req.body.newsTitle,
         newsContent: req.body.newsContent,
-        newsImage: result.secure_url,
+        newsImage: result ? result.secure_url : updatednew.newsImage,
       },
       { new: true }
     );
@@ -184,6 +189,41 @@ export const updateNews = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json(error);
+  }
+};
+
+export const addComment = async (req, res) => {
+  const { comment } = req.body;
+  const { id } = req.params;
+
+  if (!comment) {
+    return res.status(400).json({
+      message: "comment field is required",
+    });
+  }
+  const newComment = new commentModel({
+    comment,
+    userName: req.user.fullname,
+    image: req.user.userImage,
+  });
+  console.log(newComment);
+
+  try {
+    const updatedBlog = await News.findByIdAndUpdate(
+      id,
+      { $push: { comments: newComment } },
+      { new: true }
+    );
+    if (!updatedBlog) {
+      return res.status(404).json({
+        message: "Blog not found",
+      });
+    }
+    res
+      .status(200)
+      .json({ message: "comment added successfully", updatedBlog });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 

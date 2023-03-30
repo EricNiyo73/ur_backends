@@ -1,8 +1,5 @@
 import mongoose from "mongoose";
 
-const myDate = new Date();
-const date = myDate.toUTCString();
-
 const bookAdminSchema = new mongoose.Schema({
   facilityname: {
     type: String,
@@ -33,7 +30,7 @@ const bookAdminSchema = new mongoose.Schema({
   },
   date: {
     type: String,
-    default: `${date}`,
+    default: Date.now,
   },
 });
 export default mongoose.model("bookAdmin", bookAdminSchema);

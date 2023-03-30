@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-const myDate = new Date();
-const date = myDate.toUTCString();
 
 const eventSchema = new mongoose.Schema({
   author: {
@@ -21,14 +19,11 @@ const eventSchema = new mongoose.Schema({
     type: String,
   },
   endTime: {
-    type: Date,
-  },
-  eventDate: {
-    type: Date,
+    type: String,
   },
   date: {
     type: Date,
-    default: `${date}`,
+    default: Date.now,
   },
 });
 
